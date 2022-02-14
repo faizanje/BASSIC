@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/myMusicFragment"
+            android:icon="@drawable/icon_awesome_music"
+            android:title="My Music" />
+        <item
+            android:id="@+id/nav_gallery"
+            android:icon="@drawable/icon_ionic_md_download"
+            android:title="Music Download" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@drawable/icon_open_timer"
+            android:title="Sleep Timer" />
+
+        <item
+            android:id="@+id/nav_dark_mode"
+            android:icon="@drawable/icon_awesome_moon"
+            android:title="Dark Mode" />
+    </group>
+</menu>
