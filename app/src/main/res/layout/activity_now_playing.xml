@@ -60,7 +60,7 @@
             android:paddingVertical="5dp">
 
             <ImageButton
-                android:id="@+id/imageButton"
+                android:id="@+id/btnMusicLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="?selectableItemBackgroundBorderless"
@@ -83,7 +83,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/tvArtist"
                 app:layout_constraintEnd_toStartOf="@+id/imageButton2"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageButton"
+                app:layout_constraintStart_toEndOf="@+id/btnMusicLogo"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="packed" />
 

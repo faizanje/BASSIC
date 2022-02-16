@@ -17,6 +17,20 @@ public class Song {
     private /*final*/ int mArtistId;
     private /*final*/ String mArtistName;
     private /*final*/ int mYear;
+    private String mId;
+
+
+    public Song(@NonNull final String id, String title, final int trackNumber, final int year, final int duration, final String path, final String albumName, final int artistId, final String artistName) {
+        mId = id;
+        mTitle = title;
+        mTrackNumber = trackNumber;
+        mYear = year;
+        mDuration = duration;
+        mPath = path;
+        mAlbumName = albumName;
+        mArtistId = artistId;
+        mArtistName = artistName;
+    }
 
     public Song(@NonNull final String title, final int trackNumber, final int year, final int duration, final String path, final String albumName, final int artistId, final String artistName) {
         mTitle = title;
@@ -87,6 +101,14 @@ public class Song {
 
     public final int getYear() {
         return mYear;
+    }
+
+    public String getmId() {
+        return mId;
+    }
+
+    public void setmId(String mId) {
+        this.mId = mId;
     }
 
     @Override

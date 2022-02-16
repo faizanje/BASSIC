@@ -29,6 +29,7 @@ public class SongProvider {
     private static final int ALBUM = 5;
     private static final int ARTIST_ID = 6;
     private static final int ARTIST = 7;
+    private static final int _ID = 8;
 
     private static final String[] BASE_PROJECTION = new String[]{
             AudioColumns.TITLE,// 0
@@ -39,6 +40,7 @@ public class SongProvider {
             AudioColumns.ALBUM,// 5
             AudioColumns.ARTIST_ID,// 6
             AudioColumns.ARTIST,// 7
+            AudioColumns._ID, //8
     };
 
     private static final List<Song> mAllDeviceSongs = new ArrayList<>();
@@ -102,8 +104,9 @@ public class SongProvider {
         final String albumName = cursor.getString(ALBUM);
         final int artistId = cursor.getInt(ARTIST_ID);
         final String artistName = cursor.getString(ARTIST);
+        final String id = cursor.getString(_ID);
 
-        return new Song(title, trackNumber, year, duration, uri, albumName, artistId, artistName);
+        return new Song(id, title, trackNumber, year, duration, uri, albumName, artistId, artistName);
     }
 
     @Nullable

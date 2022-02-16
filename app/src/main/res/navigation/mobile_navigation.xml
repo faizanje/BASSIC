@@ -26,5 +26,14 @@
         android:id="@+id/myMusicFragment"
         android:name="com.hfdevs.bassic.ui.mymusic.MyMusicFragment"
         android:label="BASSIC"
-        tools:layout="@layout/fragment_my_music" />
+        tools:layout="@layout/fragment_my_music" >
+        <action
+            android:id="@+id/action_myMusicFragment_to_nowPlayingFragment"
+            app:destination="@id/nowPlayingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nowPlayingFragment"
+        android:name="com.hfdevs.bassic.ui.nowplaying.NowPlayingFragment"
+        android:label="fragment_now_playing"
+        tools:layout="@layout/fragment_now_playing" />
 </navigation>
