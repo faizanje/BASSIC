@@ -31,7 +31,7 @@ import com.hfdevs.bassic.adapters.ListSongsAdapter;
 import com.hfdevs.bassic.databinding.FragmentMyMusicBinding;
 import com.hfdevs.bassic.fragments.SongBottomSheetDialogFragment;
 import com.hfdevs.bassic.models.Song;
-import com.hfdevs.bassic.services.MusicService;
+//import com.hfdevs.bassic.services.MusicService;
 import com.hfdevs.bassic.services.client.MediaBrowserHelper;
 import com.hfdevs.bassic.utils.Constants;
 import com.hfdevs.bassic.utils.NavControllerUtils;
@@ -51,7 +51,6 @@ public class MyMusicFragment extends Fragment {
     FragmentMyMusicBinding binding;
     ListSongsAdapter adapter;
     SongsViewModel songsViewModel;
-    private MediaBrowserHelper mMediaBrowserHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,11 +59,6 @@ public class MyMusicFragment extends Fragment {
         binding = FragmentMyMusicBinding.inflate(getLayoutInflater());
         rxPermissions = new RxPermissions(this);
 
-        mMediaBrowserHelper = new MediaBrowserConnection(getContext());
-        mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
-
-//        SongBottomSheetDialogFragment songBottomSheetDialogFragment = new SongBottomSheetDialogFragment();
-//        songBottomSheetDialogFragment.show(getChildFragmentManager(),"BOTTOM_SHEET");
         return binding.getRoot();
     }
 
@@ -82,7 +76,6 @@ public class MyMusicFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mMediaBrowserHelper.onStart();
     }
 
     private void setListeners() {
@@ -99,6 +92,22 @@ public class MyMusicFragment extends Fragment {
                 NavControllerUtils.getNavController(getActivity()).navigate(R.id.action_myMusicFragment_to_nowPlayingFragment);
             }
         });
+
+        binding.btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                songsViewModel.nextSong();
+            }
+        });
+
+        binding.btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                songsViewModel.prevSong();
+            }
+        });
+
+
     }
 
     private void init() {
@@ -106,8 +115,9 @@ public class MyMusicFragment extends Fragment {
         adapter = new ListSongsAdapter(requireContext(), songArrayList);
         adapter.setOnListSongsClickListener(new ListSongsAdapter.OnListSongsClickListener() {
             @Override
-            public void onListSongsClicked(int position, Song listSongs) {
-                mMediaBrowserHelper.getTransportControls().play();
+            public void onListSongsClicked(int position, Song song) {
+                songsViewModel.setNowPlaying(song);
+                songsViewModel.play();
             }
         });
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -182,78 +192,5 @@ public class MyMusicFragment extends Fragment {
         compositeDisposable.dispose();
         super.onDestroyView();
     }
-
-
-    /**
-     * and implement our app specific desires.
-     */
-    private class MediaBrowserConnection extends MediaBrowserHelper {
-        private MediaBrowserConnection(Context context) {
-            super(context, MusicService.class);
-        }
-
-        @Override
-        protected void onConnected(@NonNull MediaControllerCompat mediaController) {
-//            mSeekBarAudio.setMediaController(mediaController);
-        }
-
-        @Override
-        protected void onChildrenLoaded(@NonNull String parentId,
-                                        @NonNull List<MediaBrowserCompat.MediaItem> children) {
-            super.onChildrenLoaded(parentId, children);
-
-            final MediaControllerCompat mediaController = getMediaController();
-
-            // Queue up all media items for this simple sample.
-            for (final MediaBrowserCompat.MediaItem mediaItem : children) {
-                mediaController.addQueueItem(mediaItem.getDescription());
-            }
-
-            // Call prepare now so pressing play just works.
-            mediaController.getTransportControls().prepare();
-        }
-    }
-
-    /**
-     * Implementation of the {@link MediaControllerCompat.Callback} methods we're interested in.
-     * <p>
-     * Here would also be where one could override
-     * {@code onQueueChanged(List<MediaSessionCompat.QueueItem> queue)} to get informed when items
-     * are added or removed from the queue. We don't do this here in order to keep the UI
-     * simple.
-     */
-    private class MediaBrowserListener extends MediaControllerCompat.Callback {
-        @Override
-        public void onPlaybackStateChanged(PlaybackStateCompat playbackState) {
-//            mIsPlaying = playbackState != null &&
-//                    playbackState.getState() == PlaybackStateCompat.STATE_PLAYING;
-//            mMediaControlsImage.setPressed(mIsPlaying);
-        }
-
-        @Override
-        public void onMetadataChanged(MediaMetadataCompat mediaMetadata) {
-            if (mediaMetadata == null) {
-                return;
-            }
-//            mTitleTextView.setText(
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
-//            mArtistTextView.setText(
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
-//            mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
-//                    MainActivity.this,
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
-        }
-
-        @Override
-        public void onSessionDestroyed() {
-            super.onSessionDestroyed();
-        }
-
-        @Override
-        public void onQueueChanged(List<MediaSessionCompat.QueueItem> queue) {
-            super.onQueueChanged(queue);
-        }
-    }
-
 
 }

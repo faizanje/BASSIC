@@ -39,6 +39,7 @@ import androidx.media.session.MediaButtonReceiver;
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.activities.MainActivity;
 import com.hfdevs.bassic.services.MusicService;
+import com.hfdevs.bassic.services.SimpleMusicService;
 
 
 /**
@@ -53,7 +54,8 @@ public class MediaNotificationManager {
     private static final String CHANNEL_ID = "com.example.android.musicplayer.channel";
     private static final int REQUEST_CODE = 501;
 
-    private final MusicService mService;
+//    private final MusicService mService;
+    private final SimpleMusicService mService;
 
     private final NotificationCompat.Action mPlayAction;
     private final NotificationCompat.Action mPauseAction;
@@ -61,7 +63,7 @@ public class MediaNotificationManager {
     private final NotificationCompat.Action mPrevAction;
     private final NotificationManager mNotificationManager;
 
-    public MediaNotificationManager(MusicService service) {
+    public MediaNotificationManager(SimpleMusicService service) {
         mService = service;
 
         mNotificationManager =

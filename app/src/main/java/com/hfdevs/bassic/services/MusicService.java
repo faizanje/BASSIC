@@ -64,7 +64,7 @@ public class MusicService extends MediaBrowserServiceCompat {
                         MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
         setSessionToken(mSession.getSessionToken());
 
-        mMediaNotificationManager = new MediaNotificationManager(this);
+//        mMediaNotificationManager = new MediaNotificationManager(this);
 
         mPlayback = new MediaPlayerAdapter(this, new MediaPlayerListener());
         Log.d(TAG, "onCreate: MusicService creating MediaSession, and MediaNotificationManager");
@@ -126,7 +126,7 @@ public class MusicService extends MediaBrowserServiceCompat {
             }
 
             final String mediaId = mPlaylist.get(mQueueIndex).getDescription().getMediaId();
-            mPreparedMedia = MusicLibrary.getMetadata(MusicService.this, mediaId);
+//            mPreparedMedia = MusicLibrary.getMetadata(MusicService.this, mediaId);
             mSession.setMetadata(mPreparedMedia);
 
             if (!mSession.isActive()) {

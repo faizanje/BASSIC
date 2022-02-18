@@ -23,11 +23,13 @@ import android.net.Uri;
 import android.os.SystemClock;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import com.hfdevs.bassic.activities.MainActivity;
 import com.hfdevs.bassic.loaders.MusicLibrary;
 import com.hfdevs.bassic.services.PlaybackInfoListener;
 import com.hfdevs.bassic.services.PlayerAdapter;
+import com.hfdevs.bassic.utils.Constants;
 
 /**
  * Exposes the functionality of the {@link MediaPlayer} and implements the {@link PlayerAdapter}
@@ -84,6 +86,10 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     public void playFromMedia(MediaMetadataCompat metadata) {
         mCurrentMedia = metadata;
         final String mediaId = metadata.getDescription().getMediaId();
+        Log.d(Constants.TAG, "playFromMedia: " + mediaId);
+        Log.d(Constants.TAG, "playFromMedia: " + metadata.getDescription().getMediaUri());
+        Log.d(Constants.TAG, "playFromMedia: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
+        Log.d(Constants.TAG, "playFromMedia: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
 
 //        playFile(MusicLibrary.getMusicFilename(mediaId));
         playFile(metadata.getDescription().getMediaUri());

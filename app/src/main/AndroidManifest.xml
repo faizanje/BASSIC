@@ -37,8 +37,16 @@
 <!--            </intent-filter>-->
 <!--        </service>-->
 
+<!--        <service-->
+<!--            android:name=".services.MusicService"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.media.browse.MediaBrowserService" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
         <service
-            android:name=".services.MusicService"
+            android:name=".services.SimpleMusicService"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.media.browse.MediaBrowserService" />

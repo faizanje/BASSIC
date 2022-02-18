@@ -114,6 +114,7 @@ public class Song {
     @Override
     public String toString() {
         return "Song{" +
+                "mID='" + mId + '\'' +
                 "mTitle='" + mTitle + '\'' +
                 ", mTrackNumber=" + mTrackNumber +
                 ", mDuration=" + mDuration +

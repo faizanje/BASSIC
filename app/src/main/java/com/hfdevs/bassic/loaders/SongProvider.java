@@ -42,6 +42,17 @@ public class SongProvider {
             AudioColumns.ARTIST,// 7
             AudioColumns._ID, //8
     };
+//    private static final String[] BASE_PROJECTION = new String[]{
+//        MediaStore.Audio.Media._ID,
+//        MediaStore.Audio.Media.ARTIST,
+//        MediaStore.Audio.Media.YEAR,
+//        MediaStore.Audio.Media.TITLE,
+//        MediaStore.Audio.Media.DATA
+//    };
+
+    private static Uri getUri() {
+        return MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+    }
 
     private static final List<Song> mAllDeviceSongs = new ArrayList<>();
 
@@ -91,10 +102,10 @@ public class SongProvider {
 
     @NonNull
     private static Song getSongFromCursorImpl(@NonNull final Cursor cursor) {
-        Log.d(Constants.TAG, "getSongFromCursorImpl: " + cursor.getColumnCount());
+//        Log.d(Constants.TAG, "getSongFromCursorImpl: " + cursor.getColumnCount());
 
         for (int i = 0; i < cursor.getColumnCount(); i++) {
-            Log.d(Constants.TAG, "getSongFromCursorImpl: " + cursor.getString(i));
+//            Log.d(Constants.TAG, "getSongFromCursorImpl: " + cursor.getString(i));
         }
         final String title = cursor.getString(TITLE);
         final int trackNumber = cursor.getInt(TRACK);
