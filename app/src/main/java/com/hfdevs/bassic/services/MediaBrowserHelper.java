@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.hfdevs.bassic.services.client;
+package com.hfdevs.bassic.services;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,7 +31,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
-import com.hfdevs.bassic.services.MusicService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,7 +130,7 @@ public class MediaBrowserHelper {
 
     /**
      * The internal state of the app needs to revert to what it looks like when it started before
-     * any connections to the {@link MusicService} happens via the {@link MediaSessionCompat}.
+     * any connections to the {@link SimpleMusicService} happens via the {@link MediaSessionCompat}.
      */
     private void resetState() {
         performOnAllCallbacks(new CallbackCommand() {

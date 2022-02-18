@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package com.hfdevs.bassic.services.player;
+package com.hfdevs.bassic.services;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.SystemClock;
+import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.util.Log;
 
 import com.hfdevs.bassic.activities.MainActivity;
 import com.hfdevs.bassic.loaders.MusicLibrary;
-import com.hfdevs.bassic.services.PlaybackInfoListener;
-import com.hfdevs.bassic.services.PlayerAdapter;
-import com.hfdevs.bassic.utils.Constants;
+
 
 /**
  * Exposes the functionality of the {@link MediaPlayer} and implements the {@link PlayerAdapter}
@@ -38,9 +35,9 @@ import com.hfdevs.bassic.utils.Constants;
 public final class MediaPlayerAdapter extends PlayerAdapter {
 
     private final Context mContext;
+    private final PlaybackInfoListener mPlaybackInfoListener;
     private MediaPlayer mMediaPlayer;
     private String mFilename;
-    private PlaybackInfoListener mPlaybackInfoListener;
     private MediaMetadataCompat mCurrentMedia;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
@@ -86,13 +83,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     public void playFromMedia(MediaMetadataCompat metadata) {
         mCurrentMedia = metadata;
         final String mediaId = metadata.getDescription().getMediaId();
-        Log.d(Constants.TAG, "playFromMedia: " + mediaId);
-        Log.d(Constants.TAG, "playFromMedia: " + metadata.getDescription().getMediaUri());
-        Log.d(Constants.TAG, "playFromMedia: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
-        Log.d(Constants.TAG, "playFromMedia: " + metadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_URI));
-
-//        playFile(MusicLibrary.getMusicFilename(mediaId));
-        playFile(metadata.getDescription().getMediaUri());
+        playFile(MusicLibrary.getMusicFilename(mediaId), mediaId);
     }
 
     @Override
@@ -100,30 +91,31 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         return mCurrentMedia;
     }
 
-    private void playFile(Uri uri) {
-//        boolean mediaChanged = (mFilename == null || !filename.equals(mFilename));
+    private void playFile(String filename, String mediaId) {
+        boolean mediaChanged = (mFilename == null || !filename.equals(mFilename));
         if (mCurrentMediaPlayedToCompletion) {
             // Last audio file was played to completion, the resourceId hasn't changed, but the
             // player was released, so force a reload of the media file for playback.
-//            mediaChanged = true;
-//            mCurrentMediaPlayedToCompletion = false;
+            mediaChanged = true;
+            mCurrentMediaPlayedToCompletion = false;
         }
-//        if (!mediaChanged) {
-//            if (!isPlaying()) {
-//                play();
-//            }
-//            return;
-//        } else {
-//            release();
-//        }
+        if (!mediaChanged) {
+            if (!isPlaying()) {
+                play();
+            }
+            return;
+        } else {
+            release();
+        }
 
-//        mFilename = filename;
+        mFilename = filename;
 
         initializeMediaPlayer();
 
         try {
-//            AssetFileDescriptor assetFileDescriptor = mContext.getAssets().openFd(mFilename);
-            mMediaPlayer.setDataSource(mContext.getApplicationContext(), uri);
+            MediaBrowserCompat.MediaItem mediaItem = MusicLibrary.getMediaItemByID(mediaId);
+            mMediaPlayer.setDataSource(mContext.getApplicationContext(), mediaItem.getDescription().getMediaUri());
+            //            AssetFileDescriptor assetFileDescriptor = mContext.getAssets().openFd(mFilename);
 //            mMediaPlayer.setDataSource(
 //                    assetFileDescriptor.getFileDescriptor(),
 //                    assetFileDescriptor.getStartOffset(),
@@ -202,9 +194,9 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         final PlaybackStateCompat.Builder stateBuilder = new PlaybackStateCompat.Builder();
         stateBuilder.setActions(getAvailableActions());
         stateBuilder.setState(mState,
-                              reportPosition,
-                              1.0f,
-                              SystemClock.elapsedRealtime());
+                reportPosition,
+                1.0f,
+                SystemClock.elapsedRealtime());
         mPlaybackInfoListener.onPlaybackStateChange(stateBuilder.build());
     }
 
@@ -217,28 +209,28 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     @PlaybackStateCompat.Actions
     private long getAvailableActions() {
         long actions = PlaybackStateCompat.ACTION_PLAY_FROM_MEDIA_ID
-                       | PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
-                       | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                       | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
+                | PlaybackStateCompat.ACTION_PLAY_FROM_SEARCH
+                | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
         switch (mState) {
             case PlaybackStateCompat.STATE_STOPPED:
                 actions |= PlaybackStateCompat.ACTION_PLAY
-                           | PlaybackStateCompat.ACTION_PAUSE;
+                        | PlaybackStateCompat.ACTION_PAUSE;
                 break;
             case PlaybackStateCompat.STATE_PLAYING:
                 actions |= PlaybackStateCompat.ACTION_STOP
-                           | PlaybackStateCompat.ACTION_PAUSE
-                           | PlaybackStateCompat.ACTION_SEEK_TO;
+                        | PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_SEEK_TO;
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
                 actions |= PlaybackStateCompat.ACTION_PLAY
-                           | PlaybackStateCompat.ACTION_STOP;
+                        | PlaybackStateCompat.ACTION_STOP;
                 break;
             default:
                 actions |= PlaybackStateCompat.ACTION_PLAY
-                           | PlaybackStateCompat.ACTION_PLAY_PAUSE
-                           | PlaybackStateCompat.ACTION_STOP
-                           | PlaybackStateCompat.ACTION_PAUSE;
+                        | PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        | PlaybackStateCompat.ACTION_STOP
+                        | PlaybackStateCompat.ACTION_PAUSE;
         }
         return actions;
     }

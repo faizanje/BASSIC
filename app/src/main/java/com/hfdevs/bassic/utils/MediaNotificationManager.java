@@ -38,7 +38,6 @@ import androidx.media.session.MediaButtonReceiver;
 
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.activities.MainActivity;
-import com.hfdevs.bassic.services.MusicService;
 import com.hfdevs.bassic.services.SimpleMusicService;
 
 

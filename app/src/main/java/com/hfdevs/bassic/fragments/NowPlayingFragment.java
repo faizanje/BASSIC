@@ -1,4 +1,4 @@
-package com.hfdevs.bassic.ui.nowplaying;
+package com.hfdevs.bassic.fragments;
 
 import android.os.Bundle;
 

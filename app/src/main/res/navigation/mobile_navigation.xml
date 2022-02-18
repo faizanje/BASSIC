@@ -24,7 +24,7 @@
         tools:layout="@layout/fragment_slideshow" />
     <fragment
         android:id="@+id/myMusicFragment"
-        android:name="com.hfdevs.bassic.ui.mymusic.MyMusicFragment"
+        android:name="com.hfdevs.bassic.fragments.MyMusicFragment"
         android:label="BASSIC"
         tools:layout="@layout/fragment_my_music" >
         <action
@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/nowPlayingFragment"
-        android:name="com.hfdevs.bassic.ui.nowplaying.NowPlayingFragment"
+        android:name="com.hfdevs.bassic.fragments.NowPlayingFragment"
         android:label="fragment_now_playing"
         tools:layout="@layout/fragment_now_playing" />
 </navigation>
