@@ -42,7 +42,13 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
     private MediaNotificationManager mMediaNotificationManager;
     private PlayerAdapter mPlayback;
     private boolean mServiceInStartedState;
-
+    Handler playerDurationHandler = new Handler();
+    Runnable playerDurationRunnable = new Runnable() {
+        @Override
+        public void run() {
+//            mSession.getController().getTransportControls().
+        }
+    };
     @Override
     public void onCreate() {
         super.onCreate();
@@ -73,6 +79,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
         mMediaNotificationManager.onDestroy();
         mPlayback.stop();
         mSession.release();
+        playerDurationHandler.removeCallbacksAndMessages(null);
         Log.d(Constants.TAG, "onDestroy: MediaPlayerAdapter stopped, and MediaSession released");
     }
 
