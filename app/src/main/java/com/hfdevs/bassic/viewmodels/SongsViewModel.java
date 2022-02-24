@@ -38,11 +38,8 @@ public class SongsViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<Boolean>(false);
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
-    MutableLiveData<String> nowPlayingTitle = new MutableLiveData<>();
-    MutableLiveData<String> nowPlayingArtist = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
-
-
+    MutableLiveData<PlaybackStateCompat> playingPlaybackState = new MutableLiveData<PlaybackStateCompat>();
     //    MediaBrowserCompat mediaBrowserCompat;
 //    MediaBrowserCompat.ConnectionCallback connectionCallback;
 //    MediaControllerCompat mediaControllerCompat;
@@ -55,7 +52,11 @@ public class SongsViewModel extends AndroidViewModel {
 
     }
 
-    public MediaControllerCompat getmMediaController(){
+    public LiveData<PlaybackStateCompat> getPlayingPlaybackState() {
+        return playingPlaybackState;
+    }
+
+    public MediaControllerCompat getmMediaController() {
         return mMediaBrowserHelper.getmMediaController();
     }
 
@@ -120,6 +121,10 @@ public class SongsViewModel extends AndroidViewModel {
         return mIsPlaying;
     }
 
+    public void seekto(int progress) {
+        mMediaBrowserHelper.getTransportControls().seekTo(progress);
+    }
+
     /**
      * and implement our app specific desires.
      */
@@ -164,10 +169,17 @@ public class SongsViewModel extends AndroidViewModel {
 
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat playbackState) {
+            super.onPlaybackStateChanged(playbackState);
             Log.d(Constants.TAG, "onPlaybackStateChanged: Called inside songsViewModel");
-            mIsPlaying.setValue(playbackState != null &&
-                    playbackState.getState() == PlaybackStateCompat.STATE_PLAYING);
+            playingPlaybackState.setValue(playbackState);
 
+            if (playbackState != null &&
+                    playbackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
+                mIsPlaying.setValue(true);
+                Log.d(Constants.TAG, "onPlaybackStateChanged: inside songsViewModel position: " + playbackState.getPosition());
+            } else {
+                mIsPlaying.setValue(false);
+            }
 //            mMediaControlsImage.setPressed(mIsPlaying);
         }
 
