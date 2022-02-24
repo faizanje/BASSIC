@@ -42,7 +42,7 @@
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
         <TextView
-            android:id="@+id/tvTimeLeft"
+            android:id="@+id/tvSongDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView"
@@ -67,10 +67,10 @@
             app:layout_constraintTop_toBottomOf="@+id/seekBar2">
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/btnRepeat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/imageView3"
+                app:layout_constraintEnd_toStartOf="@+id/btnNext"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,42 +79,42 @@
 
 
             <ImageView
-                android:id="@+id/imageView4"
+                android:id="@+id/btnPrev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
+                app:layout_constraintStart_toEndOf="@+id/btnShuffle"
                 app:srcCompat="@drawable/icon_material_skip_previous" />
 
 
 
             <ImageView
-                android:id="@+id/imageView7"
+                android:id="@+id/btnPlayPause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/imageView5"
+                app:layout_constraintEnd_toStartOf="@+id/btnShuffle"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
+                app:layout_constraintStart_toEndOf="@+id/btnNext"
                 app:srcCompat="@drawable/icon_material_play_circle_filled_blue" />
 
             <ImageView
-                android:id="@+id/imageView3"
+                android:id="@+id/btnNext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/imageView7"
+                app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView6"
+                app:layout_constraintStart_toEndOf="@+id/btnRepeat"
                 app:srcCompat="@drawable/icon_material_skip_next_blue" />
 
 
             <ImageView
-                android:id="@+id/imageView5"
+                android:id="@+id/btnShuffle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toStartOf="@+id/imageView4"
+                app:layout_constraintEnd_toStartOf="@+id/btnPrev"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/imageView7"
+                app:layout_constraintStart_toEndOf="@+id/btnPlayPause"
                 app:srcCompat="@drawable/icon_material_shuffle" />
 
 

@@ -45,7 +45,7 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 public class MyMusicFragment extends Fragment {
 
     final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private final ArrayList<Song> songArrayList = new ArrayList<>();
+    private final ArrayList<MediaBrowserCompat.MediaItem> songArrayList = new ArrayList<>();
     RxPermissions rxPermissions; // where this is an Activity or Fragment instance
     FragmentMyMusicBinding binding;
     ListSongsAdapter adapter;
@@ -84,18 +84,28 @@ public class MyMusicFragment extends Fragment {
                 songsViewModel.refreshSongsList();
             }
         });
-
+        adapter.setOnListSongsClickListener(new ListSongsAdapter.OnListSongsClickListener() {
+            @Override
+            public void onListSongsClicked(int position, MediaBrowserCompat.MediaItem song) {
+                songsViewModel.playFromMediaId(song.getMediaId());
+            }
+        });
         binding.btnMusicLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NavControllerUtils.getNavController(getActivity()).navigate(R.id.action_myMusicFragment_to_nowPlayingFragment);
             }
         });
-
         binding.btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 songsViewModel.nextSong();
+            }
+        });
+        binding.btnPlayPause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                songsViewModel.PlayPauseResume();
             }
         });
 
@@ -110,32 +120,36 @@ public class MyMusicFragment extends Fragment {
     }
 
     private void init() {
-        songsViewModel = new ViewModelProvider(this).get(SongsViewModel.class);
+        songsViewModel = new ViewModelProvider(requireActivity()).get(SongsViewModel.class);
         adapter = new ListSongsAdapter(requireContext(), songArrayList);
-        adapter.setOnListSongsClickListener(new ListSongsAdapter.OnListSongsClickListener() {
-            @Override
-            public void onListSongsClicked(int position, Song song) {
-                songsViewModel.setNowPlaying(song);
-                songsViewModel.play();
-            }
-        });
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.recyclerView.setAdapter(adapter);
-
         binding.swipeRefreshLayout.setRefreshing(true);
     }
 
 
     private void observeChanges() {
-        songsViewModel.getSongsLiveData().observe(requireActivity(), songs -> {
+        songsViewModel.getMediaItemsMutableLiveData().observe(requireActivity(), mediaItems -> {
             binding.swipeRefreshLayout.setRefreshing(false);
             songArrayList.clear();
-            songArrayList.addAll(songs);
+            songArrayList.addAll(mediaItems);
             adapter.notifyDataSetChanged();
         });
 
         songsViewModel.getNowPlaying().observe(requireActivity(), song -> {
             binding.tvSongName.setText(song.getSongTitle());
+            if (song.getArtistName() != null) {
+                binding.tvArtist.setText(song.getArtistName());
+
+            }
+        });
+
+        songsViewModel.getIsPlaying().observe(requireActivity(), isPlaying -> {
+            binding.btnPlayPause.setImageResource(
+                    isPlaying ?
+                            R.drawable.pause :
+                            R.drawable.icon_metro_play
+            );
         });
     }
 

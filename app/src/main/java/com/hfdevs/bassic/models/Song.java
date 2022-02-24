@@ -19,6 +19,15 @@ public class Song {
     private /*final*/ int mYear;
     private String mId;
 
+    public Song() {
+    }
+
+    public Song(String mTitle, int mDuration, String mArtistName, String mId) {
+        this.mTitle = mTitle;
+        this.mDuration = mDuration;
+        this.mArtistName = mArtistName;
+        this.mId = mId;
+    }
 
     public Song(@NonNull final String id, String title, final int trackNumber, final int year, final int duration, final String path, final String albumName, final int artistId, final String artistName) {
         mId = id;
@@ -94,7 +103,7 @@ public class Song {
         return mArtistId;
     }
 
-    @NonNull
+
     public final String getArtistName() {
         return mArtistName;
     }

@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.media.browse.MediaBrowser;
+import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -13,6 +14,7 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -33,91 +35,36 @@ import java.util.List;
 
 public class SongsViewModel extends AndroidViewModel {
 
+    private final MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<Boolean>(false);
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<String> nowPlayingTitle = new MutableLiveData<>();
+    MutableLiveData<String> nowPlayingArtist = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
-    MediaBrowserCompat mediaBrowserCompat;
-    MediaBrowserCompat.ConnectionCallback connectionCallback;
-    MediaControllerCompat mediaControllerCompat;
-    MediaBrowserCompat.SubscriptionCallback subscriptionCallback;
-    private boolean mIsPlaying;
+
+
+    //    MediaBrowserCompat mediaBrowserCompat;
+//    MediaBrowserCompat.ConnectionCallback connectionCallback;
+//    MediaControllerCompat mediaControllerCompat;
+//    MediaBrowserCompat.SubscriptionCallback subscriptionCallback;
     private MediaBrowserHelper mMediaBrowserHelper;
 
     public SongsViewModel(@NonNull Application application) {
         super(application);
         connectToMediaPlaybackService();
+
+    }
+
+    public MediaControllerCompat getmMediaController(){
+        return mMediaBrowserHelper.getmMediaController();
     }
 
     private void connectToMediaPlaybackService() {
-        mMediaBrowserHelper = new MediaBrowserConnection(getApplication().getApplicationContext());
-        mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
-
-        mMediaBrowserHelper.onStart();
-
-//        subscriptionCallback = new MediaBrowserCompat.SubscriptionCallback() {
-//
-//            @Override
-//            public void onChildrenLoaded(@NonNull String parentId, @NonNull List<MediaBrowserCompat.MediaItem> children) {
-//                Log.d(Constants.TAG, "onChildrenLoaded inside subscriptionCallback called: ");
-//                super.onChildrenLoaded(parentId, children);
-//            }
-//
-//            @Override
-//            public void onError(@NonNull String parentId) {
-//                super.onError(parentId);
-//            }
-//
-//            @Override
-//            public void onError(@NonNull String parentId, @NonNull Bundle options) {
-//                super.onError(parentId, options);
-//            }
-//        };
-//        connectionCallback = new MediaBrowserCompat.ConnectionCallback() {
-//
-//
-//            @Override
-//            public void onConnected() {
-//                super.onConnected();
-//                try {
-//                    Log.d(Constants.TAG, "onConnected: Called");
-//                    mediaControllerCompat = new MediaControllerCompat(
-//                            getApplication().getApplicationContext(),
-//                            mediaBrowserCompat.getSessionToken()
-//                    );
-//
-//                    mediaBrowserCompat.subscribe(mediaBrowserCompat.getRoot(), subscriptionCallback);
-//                    mediaControllerCompat.registerCallback(new MediaControllerCompat.Callback() {
-//                        @Override
-//                        public void onPlaybackStateChanged(PlaybackStateCompat state) {
-//                            Log.d(Constants.TAG, "onPlaybackStateChanged: " + state);
-//                            super.onPlaybackStateChanged(state);
-//                        }
-//                    });
-//                } catch (RemoteException e) {
-//                    e.printStackTrace();
-//                    Log.d(Constants.TAG, "onConnected: Exception" + e.getLocalizedMessage())
-//                    ;
-//                }
-//            }
-//
-//            @Override
-//            public void onConnectionSuspended() {
-//                super.onConnectionSuspended();
-//                Log.d(Constants.TAG, "onConnectionSuspended: ");
-//            }
-//
-//            @Override
-//            public void onConnectionFailed() {
-//                super.onConnectionFailed();
-//                Log.d(Constants.TAG, "onConnectionFailed: ");
-//            }
-//        };
-//        mediaBrowserCompat = new MediaBrowserCompat(
-//                getApplication().getApplicationContext(),
-//                new ComponentName(getApplication(), SimpleMusicService.class),
-//                connectionCallback,
-//                null
-//        );
-//        mediaBrowserCompat.connect();
+        if (mMediaBrowserHelper == null) {
+            mMediaBrowserHelper = new MediaBrowserConnection(getApplication().getApplicationContext());
+            mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
+            mMediaBrowserHelper.onStart();
+        }
     }
 
     public void refreshSongsList() {
@@ -131,43 +78,46 @@ public class SongsViewModel extends AndroidViewModel {
         MusicLibrary.buildMediaItems(songs);
     }
 
-    public LiveData<List<Song>> getSongsLiveData() {
-        return songsMutableLiveData;
+
+    public LiveData<List<MediaBrowserCompat.MediaItem>> getMediaItemsMutableLiveData() {
+        return mediaItemsMutableLiveData;
     }
 
     public LiveData<Song> getNowPlaying() {
         return nowPlaying;
     }
 
-    public void setNowPlaying(Song nowPlaying) {
-        this.nowPlaying.setValue(nowPlaying);
-    }
 
     public void nextSong() {
-        List<Song> songs = songsMutableLiveData.getValue();
-        int currentIndex = songs.indexOf(nowPlaying.getValue());
-        currentIndex++;
-        int numSongs = songs.size();
-        Song song = songs.get(currentIndex % numSongs);
-        nowPlaying.setValue(song);
+        mMediaBrowserHelper.getTransportControls().skipToNext();
     }
 
     public void prevSong() {
-        List<Song> songs = songsMutableLiveData.getValue();
-        int currentIndex = songs.indexOf(nowPlaying.getValue());
-        currentIndex--;
-        int numSongs = songs.size();
-        Song song = songs.get((currentIndex % numSongs + numSongs) % numSongs);
-        nowPlaying.setValue(song);
+        mMediaBrowserHelper.getTransportControls().skipToPrevious();
+
     }
 
-    public void playFromUri(String path) {
-        mediaControllerCompat.getTransportControls().playFromUri(Uri.fromFile(new File(path)), null);
+    public void playFromMediaId(String mediaId) {
+        mMediaBrowserHelper.getTransportControls().playFromMediaId(mediaId, null);
     }
 
-    public void play() {
-        mMediaBrowserHelper.getTransportControls().play();
-//        mediaControllerCompat.getTransportControls().playFromMediaId(nowPlaying.getValue().getmId(), null);
+
+    public void PlayPauseResume() {
+        if (mIsPlaying.getValue()) {
+            mMediaBrowserHelper.getTransportControls().pause();
+        } else {
+            mMediaBrowserHelper.getTransportControls().play();
+        }
+    }
+
+
+    public void shuffle() {
+
+        mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+    }
+
+    public LiveData<Boolean> getIsPlaying() {
+        return mIsPlaying;
     }
 
     /**
@@ -188,8 +138,10 @@ public class SongsViewModel extends AndroidViewModel {
                                         @NonNull List<MediaBrowserCompat.MediaItem> children) {
             super.onChildrenLoaded(parentId, children);
 
-            final MediaControllerCompat mediaController = getMediaController();
+            Log.d(Constants.TAG, "onChildrenLoaded:  in songsViewModel: MediaItems size" + children.size());
 
+            final MediaControllerCompat mediaController = getMediaController();
+            mediaItemsMutableLiveData.setValue(children);
             // Queue up all media items for this simple sample.
             for (final MediaBrowserCompat.MediaItem mediaItem : children) {
                 mediaController.addQueueItem(mediaItem.getDescription());
@@ -209,11 +161,13 @@ public class SongsViewModel extends AndroidViewModel {
      * simple.
      */
     private class MediaBrowserListener extends MediaControllerCompat.Callback {
+
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat playbackState) {
-            Log.d(Constants.TAG, "onPlaybackStateChanged: Called");
-            mIsPlaying = playbackState != null &&
-                    playbackState.getState() == PlaybackStateCompat.STATE_PLAYING;
+            Log.d(Constants.TAG, "onPlaybackStateChanged: Called inside songsViewModel");
+            mIsPlaying.setValue(playbackState != null &&
+                    playbackState.getState() == PlaybackStateCompat.STATE_PLAYING);
+
 //            mMediaControlsImage.setPressed(mIsPlaying);
         }
 
@@ -222,7 +176,26 @@ public class SongsViewModel extends AndroidViewModel {
             if (mediaMetadata == null) {
                 return;
             }
-            Log.d(Constants.TAG, "onMetadataChanged: called");
+            Log.d(Constants.TAG, "onMetadataChanged: called inside songsViewModel");
+            Log.d(Constants.TAG, "onMetadataChanged: Title " + mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
+
+//            for (String s : mediaMetadata.getBundle().keySet()) {
+//                Log.d(Constants.TAG, String.format("%s: %s", s, mediaMetadata.getString(s)));
+//            }
+
+            String TITLE = mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE);
+            String ARTIST = mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
+            String MEDIA_ID = mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID);
+            int DURATION = (int) mediaMetadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION);
+            Song song = new Song(TITLE, DURATION, ARTIST, MEDIA_ID);
+            nowPlaying.setValue(song);
+
+
+//
+//
+//            nowPlayingTitle.setValue(TITLE);
+//            nowPlayingArtist.setValue(ARTIST);
+
 //            mTitleTextView.setText(
 //                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
 //            mArtistTextView.setText(
@@ -239,7 +212,10 @@ public class SongsViewModel extends AndroidViewModel {
 
         @Override
         public void onQueueChanged(List<MediaSessionCompat.QueueItem> queue) {
+            Log.d(Constants.TAG, "onQueueChanged: Called inside SongsViewModel");
             super.onQueueChanged(queue);
         }
     }
+
+
 }

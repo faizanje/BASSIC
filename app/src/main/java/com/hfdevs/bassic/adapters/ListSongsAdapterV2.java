@@ -2,8 +2,6 @@ package com.hfdevs.bassic.adapters;
 
 
 import android.content.Context;
-import android.support.v4.media.MediaBrowserCompat;
-import android.support.v4.media.MediaMetadataCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +9,6 @@ import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hfdevs.bassic.databinding.ItemMusicListBinding;
-import com.hfdevs.bassic.loaders.MusicLibrary;
 import com.hfdevs.bassic.models.Song;
 
 import org.jetbrains.annotations.NotNull;
@@ -19,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 
-public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyViewHolder> {
+public class ListSongsAdapterV2 extends RecyclerView.Adapter<ListSongsAdapterV2.MyViewHolder> {
 
-    ArrayList<MediaBrowserCompat.MediaItem> listSongsArrayList;
+    ArrayList<Song> listSongsArrayList;
     Context context;
     OnListSongsClickListener onListSongsClickListener;
 
-    public ListSongsAdapter(Context context, ArrayList<MediaBrowserCompat.MediaItem> listSongsArrayList) {
+    public ListSongsAdapterV2(Context context, ArrayList<Song> listSongsArrayList) {
         this.context = context;
         this.listSongsArrayList = listSongsArrayList;
     }
@@ -43,16 +40,15 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyVi
 
     @Override
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
-        MediaBrowserCompat.MediaItem song = listSongsArrayList.get(holder.getAbsoluteAdapterPosition());
+        Song listSongs = listSongsArrayList.get(holder.getAdapterPosition());
 
-        MediaMetadataCompat mediaMetadataCompat = MusicLibrary.getMetadata(song.getMediaId());
-        String artist = mediaMetadataCompat.getString(MediaMetadataCompat.METADATA_KEY_ARTIST);
-        holder.binding.tvSongName.setText(String.format("%s - %s", song.getDescription().getTitle(), artist));
+        holder.binding.tvSongName.setText(listSongs.getSongTitle());
+
         holder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onListSongsClickListener != null) {
-                    onListSongsClickListener.onListSongsClicked(holder.getAdapterPosition(), listSongsArrayList.get(holder.getAbsoluteAdapterPosition()));
+                    onListSongsClickListener.onListSongsClicked(holder.getAdapterPosition(), listSongsArrayList.get(holder.getAdapterPosition()));
                 }
             }
         });
@@ -66,7 +62,7 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyVi
     }
 
     public interface OnListSongsClickListener {
-        void onListSongsClicked(int position, MediaBrowserCompat.MediaItem song);
+        void onListSongsClicked(int position, Song listSongs);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

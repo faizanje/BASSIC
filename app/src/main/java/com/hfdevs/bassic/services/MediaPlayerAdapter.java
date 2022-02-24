@@ -23,9 +23,11 @@ import android.os.SystemClock;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 
 import com.hfdevs.bassic.activities.MainActivity;
 import com.hfdevs.bassic.loaders.MusicLibrary;
+import com.hfdevs.bassic.utils.Constants;
 
 
 /**
@@ -41,14 +43,15 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     private MediaMetadataCompat mCurrentMedia;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
-
+    SimpleMusicService musicService;
     // Work-around for a MediaPlayer bug related to the behavior of MediaPlayer.seekTo()
     // while not playing.
     private int mSeekWhileNotPlaying = -1;
 
-    public MediaPlayerAdapter(Context context, PlaybackInfoListener listener) {
-        super(context);
-        mContext = context.getApplicationContext();
+    public MediaPlayerAdapter(SimpleMusicService musicService, PlaybackInfoListener listener) {
+        super(musicService.getApplicationContext());
+        this.musicService = musicService;
+        mContext = musicService.getApplicationContext();
         mPlaybackInfoListener = listener;
     }
 
@@ -73,6 +76,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
                     // Paused allows: seekTo(), start(), pause(), stop()
                     // Stop allows: stop()
                     setNewState(PlaybackStateCompat.STATE_PAUSED);
+                    musicService.mCallback.onSkipToNext();
                 }
             });
         }
@@ -163,6 +167,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
 
     @Override
     protected void onPause() {
+        Log.d(Constants.TAG, "onPause: Called ");
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             setNewState(PlaybackStateCompat.STATE_PAUSED);

@@ -9,6 +9,7 @@
     android:layout_margin="15dp">
 
     <ImageView
+        android:layout_gravity="center_vertical"
         android:src="@drawable/icon_ionic_md_musical_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

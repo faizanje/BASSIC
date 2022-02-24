@@ -23,10 +23,13 @@ import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 
 import androidx.appcompat.widget.AppCompatSeekBar;
+
+import com.hfdevs.bassic.utils.Constants;
 
 /**
  * SeekBar that can be used with a {@link MediaSessionCompat} to track and seek in playing
@@ -79,9 +82,11 @@ public class MediaSeekBar extends AppCompatSeekBar {
 
     public void setMediaController(final MediaControllerCompat mediaController) {
         if (mediaController != null) {
+            Log.d(Constants.TAG, "MediaSeekbar: mediaController not null");
             mControllerCallback = new ControllerCallback();
             mediaController.registerCallback(mControllerCallback);
         } else if (mMediaController != null) {
+            Log.d(Constants.TAG, "MediaSeekbar: my mediaController is not null. Already initialized");
             mMediaController.unregisterCallback(mControllerCallback);
             mControllerCallback = null;
         }
@@ -108,7 +113,7 @@ public class MediaSeekBar extends AppCompatSeekBar {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat state) {
             super.onPlaybackStateChanged(state);
-
+            Log.d(Constants.TAG, "MediaSeekbar: onPlaybackStateChanged: ");
             // If there's an ongoing animation, stop it now.
             if (mProgressAnimator != null) {
                 mProgressAnimator.cancel();
@@ -137,7 +142,7 @@ public class MediaSeekBar extends AppCompatSeekBar {
         @Override
         public void onMetadataChanged(MediaMetadataCompat metadata) {
             super.onMetadataChanged(metadata);
-
+            Log.d(Constants.TAG, "MediaSeekbar: onMetadataChanged: ");
             final int max = metadata != null
                     ? (int) metadata.getLong(MediaMetadataCompat.METADATA_KEY_DURATION)
                     : 0;
@@ -147,6 +152,7 @@ public class MediaSeekBar extends AppCompatSeekBar {
 
         @Override
         public void onAnimationUpdate(final ValueAnimator valueAnimator) {
+            Log.d(Constants.TAG, "MediaSeekbar: onAnimationUpdate: ");
             // If the user is changing the slider, cancel the animation.
             if (mIsTracking) {
                 valueAnimator.cancel();

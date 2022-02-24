@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread" />
+         />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/flexboxLayout3"
@@ -74,8 +74,8 @@
 
         <ImageView
             android:id="@+id/btnPlayPause"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="@+id/btnShuffle"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/btnNext"
@@ -107,7 +107,7 @@
         android:id="@+id/tvSongDuration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
+        android:text="TextView"
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="@+id/seekBar2"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
@@ -116,7 +116,7 @@
         android:id="@+id/tvTimeElapsed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00:00"
+        android:text="TextView"
         android:textColor="@color/black"
         app:layout_constraintStart_toStartOf="@+id/seekBar2"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />

@@ -97,12 +97,14 @@
             app:layout_constraintTop_toBottomOf="@+id/tvSongName" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            app:tint="@color/white"
+            android:id="@+id/btnPlayPause"
+            android:layout_width="33.665dp"
+            android:layout_height="33.665dp"
             android:layout_marginEnd="20dp"
+            android:scaleType="fitXY"
             android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/icon_metro_play"
+            android:src="@drawable/pause"
             app:layout_constraintBottom_toBottomOf="@+id/btnNext"
             app:layout_constraintEnd_toStartOf="@+id/btnNext"
             app:layout_constraintTop_toTopOf="@+id/btnNext"
@@ -115,9 +117,9 @@
             android:layout_marginEnd="20dp"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/icon_material_skip_prev"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton3"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton3"
-            app:layout_constraintTop_toTopOf="@+id/imageButton3" />
+            app:layout_constraintBottom_toBottomOf="@+id/btnPlayPause"
+            app:layout_constraintEnd_toStartOf="@+id/btnPlayPause"
+            app:layout_constraintTop_toTopOf="@+id/btnPlayPause" />
 
         <ImageButton
             android:id="@+id/btnNext"

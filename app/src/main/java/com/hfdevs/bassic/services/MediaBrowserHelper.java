@@ -57,14 +57,19 @@ public class MediaBrowserHelper {
     @Nullable
     private MediaControllerCompat mMediaController;
 
+    @Nullable
+    public MediaControllerCompat getmMediaController() {
+        return mMediaController;
+    }
+
     public MediaBrowserHelper(Context context,
                               Class<? extends MediaBrowserServiceCompat> serviceClass) {
         mContext = context;
         mMediaBrowserServiceClass = serviceClass;
-
         mMediaBrowserConnectionCallback = new MediaBrowserConnectionCallback();
         mMediaControllerCallback = new MediaControllerCallback();
         mMediaBrowserSubscriptionCallback = new MediaBrowserSubscriptionCallback();
+
     }
 
     public void onStart() {
