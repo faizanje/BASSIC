@@ -45,6 +45,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true"
         android:id="@+id/layoutPlayerMini"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"

@@ -101,6 +101,17 @@ public class NowPlayingFragment extends Fragment {
 
         });
 
+        songsViewModel.getShuffleMode().observe(getViewLifecycleOwner(), shuffleMode -> {
+
+            binding.btnShuffle.setImageResource(
+                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
+                            R.drawable.icon_material_shuffle :
+                            R.drawable.icon_material_shuffle_gray
+                    );
+
+
+        });
+
         songsViewModel.getIsPlaying().observe(getViewLifecycleOwner(), isPlaying -> {
 
             binding.btnPlayPause.setImageResource(

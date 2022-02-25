@@ -39,6 +39,7 @@ public class SongsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<Boolean>(false);
     private final MutableLiveData<Long> currentPlayingDuration = new MutableLiveData<Long>();
+    private final MutableLiveData<Integer> shuffleMode = new MutableLiveData<Integer>();
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
@@ -61,6 +62,10 @@ public class SongsViewModel extends AndroidViewModel {
 
     public MediaControllerCompat getmMediaController() {
         return mMediaBrowserHelper.getmMediaController();
+    }
+
+    public LiveData<Integer> getShuffleMode() {
+        return shuffleMode;
     }
 
     private void connectToMediaPlaybackService() {
@@ -114,8 +119,15 @@ public class SongsViewModel extends AndroidViewModel {
 
 
     public void shuffle() {
-
-        mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+        if (shuffleMode.getValue() != null) {
+            if (shuffleMode.getValue() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
+                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+            } else {
+                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+                mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+            }
+        }
     }
 
     public LiveData<Boolean> getIsPlaying() {
@@ -171,19 +183,20 @@ public class SongsViewModel extends AndroidViewModel {
         @Override
         public void onPlaybackStateChanged(PlaybackStateCompat playbackState) {
             super.onPlaybackStateChanged(playbackState);
-            Log.d(Constants.TAG, "onPlaybackStateChanged: Called inside songsViewModel");
+//            Log.d(Constants.TAG, "onPlaybackStateChanged: Called inside songsViewModel");
             playingPlaybackState.setValue(playbackState);
 
             if (playbackState != null &&
                     playbackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
                 mIsPlaying.setValue(true);
                 currentPlayingDuration.setValue(playbackState.getPosition());
-                Log.d(Constants.TAG, "onPlaybackStateChanged: inside songsViewModel position: " + playbackState.getPosition());
+//                Log.d(Constants.TAG, "onPlaybackStateChanged: inside songsViewModel position: " + playbackState.getPosition());
             } else {
                 mIsPlaying.setValue(false);
             }
 //            mMediaControlsImage.setPressed(mIsPlaying);
         }
+
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat mediaMetadata) {
@@ -222,6 +235,28 @@ public class SongsViewModel extends AndroidViewModel {
         @Override
         public void onSessionDestroyed() {
             super.onSessionDestroyed();
+        }
+
+        @Override
+        public void onShuffleModeChanged(int shuffleMode) {
+            Log.d(Constants.TAG, "onShuffleModeChanged: inside songsViewModel");
+            switch (shuffleMode) {
+
+                case PlaybackStateCompat.SHUFFLE_MODE_ALL:
+                    Log.d(Constants.TAG, "onShuffleModeChanged: SHUFFLE_MODE_ALL");
+                    break;
+                case PlaybackStateCompat.SHUFFLE_MODE_GROUP:
+                    Log.d(Constants.TAG, "onShuffleModeChanged: SHUFFLE_MODE_GROUP");
+                    break;
+                case PlaybackStateCompat.SHUFFLE_MODE_INVALID:
+                    Log.d(Constants.TAG, "onShuffleModeChanged: SHUFFLE_MODE_INVALID");
+                    break;
+                case PlaybackStateCompat.SHUFFLE_MODE_NONE:
+                    Log.d(Constants.TAG, "onShuffleModeChanged: SHUFFLE_MODE_NONE");
+                    break;
+            }
+            SongsViewModel.this.shuffleMode.setValue(shuffleMode);
+            super.onShuffleModeChanged(shuffleMode);
         }
 
         @Override

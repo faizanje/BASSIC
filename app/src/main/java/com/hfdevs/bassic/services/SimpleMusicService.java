@@ -37,11 +37,6 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
 
     public MediaSessionCallback mCallback;
     MediaPlayer mediaPlayer;
-    //    MediaSessionCompat mediaSessionCompat;
-    private MediaSessionCompat mSession;
-    private MediaNotificationManager mMediaNotificationManager;
-    private MediaPlayerAdapter mPlayback;
-    private boolean mServiceInStartedState;
     Handler playerDurationHandler = new Handler();
     Runnable playerDurationRunnable = new Runnable() {
         @Override
@@ -49,6 +44,12 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
 //            mSession.getController().getTransportControls().
         }
     };
+    //    MediaSessionCompat mediaSessionCompat;
+    private MediaSessionCompat mSession;
+    private MediaNotificationManager mMediaNotificationManager;
+    private MediaPlayerAdapter mPlayback;
+    private boolean mServiceInStartedState;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -108,6 +109,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
         private int mQueueIndex = -1;
         private MediaMetadataCompat mPreparedMedia;
         private boolean isRandom = false;
+        private boolean isRepeatModeOn = false;
 
         @Override
         public void onAddQueueItem(MediaDescriptionCompat description) {
@@ -115,7 +117,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
             Log.d(Constants.TAG, String.format("onAddQueueItem: %s. Index: %s", description.getTitle(), description.hashCode()));
             MediaSessionCompat.QueueItem queueItem = new MediaSessionCompat.QueueItem(description, description.hashCode());
             mPlaylist.add(queueItem);
-            queueItemHashMap.put(description.getMediaId(),queueItem);
+            queueItemHashMap.put(description.getMediaId(), queueItem);
             mQueueIndex = (mQueueIndex == -1) ? 0 : mQueueIndex;
             mSession.setQueue(mPlaylist);
         }
@@ -219,14 +221,26 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
         }
 
         @Override
+        public void onSetRepeatMode(int repeatMode) {
+
+            mSession.setRepeatMode(repeatMode);
+            super.onSetRepeatMode(repeatMode);
+        }
+
+        @Override
         public void onSetShuffleMode(int shuffleMode) {
+            Log.d(Constants.TAG, "onSetShuffleMode: Called inside SimpleMusicService");
             isRandom = shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL;
             if (isRandom) {
                 long seed = System.nanoTime();
+                mPlaylistOriginal.clear();
+                mPlaylistOriginal.addAll(mPlaylist);
                 Collections.shuffle(mPlaylist, new Random(seed));
             } else {
-
+                mPlaylist.clear();
+                mPlaylist.addAll(mPlaylistOriginal);
             }
+            mSession.setShuffleMode(shuffleMode);
             super.onSetShuffleMode(shuffleMode);
         }
 
@@ -267,7 +281,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
         @Override
         public void onPlaybackStateChange(PlaybackStateCompat state) {
             // Report the state to the MediaSession.
-            Log.d(Constants.TAG, "onPlaybackStateChange: Called");
+//            Log.d(Constants.TAG, "onPlaybackStateChange: Called");
             // Manage the started state of this service.
             switch (state.getState()) {
                 case PlaybackStateCompat.STATE_PLAYING:
@@ -290,7 +304,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
                         mMediaNotificationManager.getNotification(
                                 mPlayback.getCurrentMedia(), state, getSessionToken());
 
-                Log.d(Constants.TAG, "moveServiceToStartedState: called");
+//                Log.d(Constants.TAG, "moveServiceToStartedState: called");
                 if (!mServiceInStartedState) {
                     ContextCompat.startForegroundService(
                             SimpleMusicService.this,

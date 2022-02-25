@@ -86,6 +86,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
                     // Paused allows: seekTo(), start(), pause(), stop()
                     // Stop allows: stop()
                     setNewState(PlaybackStateCompat.STATE_PAUSED);
+
                     musicService.mCallback.onSkipToNext();
                 }
             });

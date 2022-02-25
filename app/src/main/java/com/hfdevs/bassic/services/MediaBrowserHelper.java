@@ -32,6 +32,8 @@ import androidx.annotation.Nullable;
 import androidx.media.MediaBrowserServiceCompat;
 
 
+import com.hfdevs.bassic.utils.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +59,6 @@ public class MediaBrowserHelper {
     @Nullable
     private MediaControllerCompat mMediaController;
 
-    @Nullable
-    public MediaControllerCompat getmMediaController() {
-        return mMediaController;
-    }
-
     public MediaBrowserHelper(Context context,
                               Class<? extends MediaBrowserServiceCompat> serviceClass) {
         mContext = context;
@@ -70,6 +67,11 @@ public class MediaBrowserHelper {
         mMediaControllerCallback = new MediaControllerCallback();
         mMediaBrowserSubscriptionCallback = new MediaBrowserSubscriptionCallback();
 
+    }
+
+    @Nullable
+    public MediaControllerCompat getmMediaController() {
+        return mMediaController;
     }
 
     public void onStart() {
@@ -97,6 +99,16 @@ public class MediaBrowserHelper {
         resetState();
         Log.d(TAG, "onStop: Releasing MediaController, Disconnecting from MediaBrowser");
     }
+
+    public void shuffleCallback(int shuffleMode){
+        performOnAllCallbacks(new CallbackCommand() {
+            @Override
+            public void perform(@NonNull Callback callback) {
+                callback.onShuffleModeChanged(shuffleMode);
+            }
+        });
+    }
+
 
     /**
      * Called after connecting with a {@link MediaBrowserServiceCompat}.
@@ -132,6 +144,8 @@ public class MediaBrowserHelper {
         }
         return mMediaController;
     }
+
+
 
     /**
      * The internal state of the app needs to revert to what it looks like when it started before
@@ -170,6 +184,10 @@ public class MediaBrowserHelper {
                 if (playbackState != null) {
                     callback.onPlaybackStateChanged(playbackState);
                 }
+
+                final int shuffleMode = mMediaController.getShuffleMode();
+
+                callback.onShuffleModeChanged(shuffleMode);
             }
         }
     }
@@ -206,6 +224,8 @@ public class MediaBrowserHelper {
                 mMediaControllerCallback.onMetadataChanged(mMediaController.getMetadata());
                 mMediaControllerCallback.onPlaybackStateChanged(
                         mMediaController.getPlaybackState());
+                mMediaControllerCallback.onShuffleModeChanged(
+                        mMediaController.getShuffleMode());
 
                 MediaBrowserHelper.this.onConnected(mMediaController);
             } catch (RemoteException e) {
@@ -248,6 +268,17 @@ public class MediaBrowserHelper {
                 @Override
                 public void perform(@NonNull Callback callback) {
                     callback.onPlaybackStateChanged(state);
+                }
+            });
+        }
+
+        @Override
+        public void onShuffleModeChanged(int shuffleMode) {
+            Log.d(Constants.TAG, "onShuffleModeChanged: inside media helper");
+            performOnAllCallbacks(new CallbackCommand() {
+                @Override
+                public void perform(@NonNull Callback callback) {
+                    callback.onShuffleModeChanged(shuffleMode);
                 }
             });
         }
