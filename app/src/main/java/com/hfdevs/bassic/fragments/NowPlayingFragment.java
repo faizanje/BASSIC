@@ -107,7 +107,18 @@ public class NowPlayingFragment extends Fragment {
                     shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
                             R.drawable.icon_material_shuffle :
                             R.drawable.icon_material_shuffle_gray
-                    );
+            );
+
+
+        });
+
+        songsViewModel.getRepeatMode().observe(getViewLifecycleOwner(), repeatMode -> {
+
+            binding.btnRepeat.setImageResource(
+                    repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
+                            R.drawable.icon_material_repeat_one :
+                            R.drawable.icon_material_repeat_one_gray
+            );
 
 
         });
@@ -205,6 +216,10 @@ public class NowPlayingFragment extends Fragment {
         binding.btnShuffle.setOnClickListener(v -> {
             Toast.makeText(requireContext(), "Shuffled", Toast.LENGTH_SHORT).show();
             songsViewModel.shuffle();
+        });
+        binding.btnRepeat.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Repeat mode", Toast.LENGTH_SHORT).show();
+            songsViewModel.toggleRepeatMode();
         });
 
     }

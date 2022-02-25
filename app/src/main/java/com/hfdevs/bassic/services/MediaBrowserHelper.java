@@ -100,11 +100,20 @@ public class MediaBrowserHelper {
         Log.d(TAG, "onStop: Releasing MediaController, Disconnecting from MediaBrowser");
     }
 
-    public void shuffleCallback(int shuffleMode){
+    public void shuffleCallback(int shuffleMode) {
         performOnAllCallbacks(new CallbackCommand() {
             @Override
             public void perform(@NonNull Callback callback) {
                 callback.onShuffleModeChanged(shuffleMode);
+            }
+        });
+    }
+
+    public void repeatModeCallback(int repeatMode) {
+        performOnAllCallbacks(new CallbackCommand() {
+            @Override
+            public void perform(@NonNull Callback callback) {
+                callback.onRepeatModeChanged(repeatMode);
             }
         });
     }
@@ -146,7 +155,6 @@ public class MediaBrowserHelper {
     }
 
 
-
     /**
      * The internal state of the app needs to revert to what it looks like when it started before
      * any connections to the {@link SimpleMusicService} happens via the {@link MediaSessionCompat}.
@@ -186,8 +194,12 @@ public class MediaBrowserHelper {
                 }
 
                 final int shuffleMode = mMediaController.getShuffleMode();
-
                 callback.onShuffleModeChanged(shuffleMode);
+
+
+                final int repeatMode = mMediaController.getRepeatMode();
+                callback.onRepeatModeChanged(repeatMode);
+
             }
         }
     }
@@ -226,6 +238,8 @@ public class MediaBrowserHelper {
                         mMediaController.getPlaybackState());
                 mMediaControllerCallback.onShuffleModeChanged(
                         mMediaController.getShuffleMode());
+                mMediaControllerCallback.onRepeatModeChanged(
+                        mMediaController.getRepeatMode());
 
                 MediaBrowserHelper.this.onConnected(mMediaController);
             } catch (RemoteException e) {
@@ -268,6 +282,17 @@ public class MediaBrowserHelper {
                 @Override
                 public void perform(@NonNull Callback callback) {
                     callback.onPlaybackStateChanged(state);
+                }
+            });
+        }
+
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+            Log.d(Constants.TAG, "onShuffleModeChanged: inside media helper");
+            performOnAllCallbacks(new CallbackCommand() {
+                @Override
+                public void perform(@NonNull Callback callback) {
+                    callback.onRepeatModeChanged(repeatMode);
                 }
             });
         }

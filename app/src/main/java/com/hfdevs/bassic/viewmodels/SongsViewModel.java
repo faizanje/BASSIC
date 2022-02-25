@@ -40,6 +40,7 @@ public class SongsViewModel extends AndroidViewModel {
     private final MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<Boolean>(false);
     private final MutableLiveData<Long> currentPlayingDuration = new MutableLiveData<Long>();
     private final MutableLiveData<Integer> shuffleMode = new MutableLiveData<Integer>();
+    private final MutableLiveData<Integer> repeatMode = new MutableLiveData<Integer>();
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
@@ -66,6 +67,10 @@ public class SongsViewModel extends AndroidViewModel {
 
     public LiveData<Integer> getShuffleMode() {
         return shuffleMode;
+    }
+
+    public LiveData<Integer> getRepeatMode() {
+        return repeatMode;
     }
 
     private void connectToMediaPlaybackService() {
@@ -121,11 +126,23 @@ public class SongsViewModel extends AndroidViewModel {
     public void shuffle() {
         if (shuffleMode.getValue() != null) {
             if (shuffleMode.getValue() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.SHUFFLE_MODE_NONE);
                 mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
             } else {
-                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.SHUFFLE_MODE_ALL);
                 mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+            }
+        }
+    }
+
+    public void toggleRepeatMode() {
+        if (repeatMode.getValue() != null) {
+            if (repeatMode.getValue() == PlaybackStateCompat.REPEAT_MODE_ONE) {
+                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_NONE);
+                mMediaBrowserHelper.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
+            } else {
+                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_ONE);
+                mMediaBrowserHelper.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
             }
         }
     }
@@ -197,6 +214,12 @@ public class SongsViewModel extends AndroidViewModel {
 //            mMediaControlsImage.setPressed(mIsPlaying);
         }
 
+        @Override
+        public void onRepeatModeChanged(int repeatMode) {
+            Log.d(Constants.TAG, "onRepeatModeChanged: Called inside songs viewMoodel");
+            SongsViewModel.this.repeatMode.setValue(repeatMode);
+            super.onRepeatModeChanged(repeatMode);
+        }
 
         @Override
         public void onMetadataChanged(MediaMetadataCompat mediaMetadata) {
@@ -218,18 +241,6 @@ public class SongsViewModel extends AndroidViewModel {
             nowPlaying.setValue(song);
 
 
-//
-//
-//            nowPlayingTitle.setValue(TITLE);
-//            nowPlayingArtist.setValue(ARTIST);
-
-//            mTitleTextView.setText(
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
-//            mArtistTextView.setText(
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
-//            mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
-//                    MainActivity.this,
-//                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
         }
 
         @Override
