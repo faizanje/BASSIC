@@ -10,6 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.navigation.Navigator;
+import androidx.navigation.fragment.FragmentNavigator;
+import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -26,6 +30,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.transition.MaterialFade;
+import com.google.android.material.transition.MaterialFadeThrough;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.adapters.ListSongsAdapter;
 import com.hfdevs.bassic.databinding.FragmentMyMusicBinding;
@@ -50,6 +57,18 @@ public class MyMusicFragment extends Fragment {
     FragmentMyMusicBinding binding;
     ListSongsAdapter adapter;
     SongsViewModel songsViewModel;
+    //    Object transition = new MaterialFadeThrough();
+//    Object transition = new MaterialFade();
+    Object transition = new MaterialSharedAxis(MaterialSharedAxis.Z, false);
+    Object transition2 = new MaterialSharedAxis(MaterialSharedAxis.Z, true);
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setExitTransition(transition);
+        setReenterTransition(transition2);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,43 +97,43 @@ public class MyMusicFragment extends Fragment {
     }
 
     private void setListeners() {
-        binding.swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                songsViewModel.refreshSongsList();
-            }
-        });
-        adapter.setOnListSongsClickListener(new ListSongsAdapter.OnListSongsClickListener() {
-            @Override
-            public void onListSongsClicked(int position, MediaBrowserCompat.MediaItem song) {
-                songsViewModel.playFromMediaId(song.getMediaId());
-            }
-        });
-        binding.btnMusicLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NavControllerUtils.getNavController(getActivity()).navigate(R.id.action_myMusicFragment_to_nowPlayingFragment);
-            }
-        });
-        binding.btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                songsViewModel.nextSong();
-            }
-        });
-        binding.btnPlayPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                songsViewModel.PlayPauseResume();
-            }
-        });
 
-        binding.btnPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                songsViewModel.prevSong();
-            }
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> songsViewModel.refreshSongsList());
+        adapter.setOnListSongsClickListener((position, song) -> songsViewModel.playFromMediaId(song.getMediaId()));
+        binding.btnMusicLogo.setOnClickListener(v -> {
+
+            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
+//                    .addSharedElement(binding.tvSongName, "shared_transition2")
+                    .addSharedElement(binding.btnMusicLogo, "shared_transition")
+//                    .addSharedElement(binding.btnPlayPause, "pause_play")
+//                    .addSharedElement(binding.btnPrev, "prev")
+//                    .addSharedElement(binding.btnNext, "next")
+                    .build();
+
+
+            NavControllerUtils.getNavController(getActivity())
+                    .navigate(R.id.action_myMusicFragment_to_nowPlayingFragment, null, null, extras);
+//                    .navigate(R.id.action_myMusicFragment_to_nowPlayingFragment, null, null, null);
+//            Navigation.findNavController(v).navigate(
+//                    R.id.action_myMusicFragment_to_nowPlayingFragment,
+//                    null, // Bundle of args
+//                    null, // NavOptions
+//                    extras);
+
+//            Navigator.Extras extras1 = Navigator.Extras().Builder()
+//                    .addSharedElement(v,"secondTransitionName" )
+//                    .build();
+//            NavControllerUtils.getNavController(getActivity())
+//                    .navigate(
+//                            R.id.action_myMusicFragment_to_nowPlayingFragment,
+//                            null,
+//                            null,
+//                            extras
+//                            );
         });
+        binding.btnNext.setOnClickListener(v -> songsViewModel.nextSong());
+        binding.btnPlayPause.setOnClickListener(v -> songsViewModel.PlayPauseResume());
+        binding.btnPrev.setOnClickListener(v -> songsViewModel.prevSong());
 
 
     }
@@ -134,6 +153,7 @@ public class MyMusicFragment extends Fragment {
             songArrayList.clear();
             songArrayList.addAll(mediaItems);
             adapter.notifyDataSetChanged();
+            binding.layoutPlayerMini.setVisibility(View.VISIBLE);
         });
 
         songsViewModel.getNowPlaying().observe(requireActivity(), song -> {
@@ -161,7 +181,7 @@ public class MyMusicFragment extends Fragment {
                     // Denied permission with ask never again
                     // Need to go to the settings
                     if (permission.granted) {
-                        Toast.makeText(requireContext(), permission.name + " is granted", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(requireContext(), permission.name + " is granted", Toast.LENGTH_SHORT).show();
                         songsViewModel.refreshSongsList();
                     } else
                         showPermissionRequiredDialog(!permission.shouldShowRequestPermissionRationale);

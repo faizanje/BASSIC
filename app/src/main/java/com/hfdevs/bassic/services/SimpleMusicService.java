@@ -40,7 +40,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
     //    MediaSessionCompat mediaSessionCompat;
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
-    private PlayerAdapter mPlayback;
+    private MediaPlayerAdapter mPlayback;
     private boolean mServiceInStartedState;
     Handler playerDurationHandler = new Handler();
     Runnable playerDurationRunnable = new Runnable() {

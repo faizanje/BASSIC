@@ -159,10 +159,6 @@ public class MusicLibrary {
                     song.getSongDuration(),
                     TimeUnit.MILLISECONDS,
                     song.getSongPath()
-//                    "",
-//                    song.getSongTitle(),
-//                    song.getArtistId(),
-//                    ""
             );
         }
     }

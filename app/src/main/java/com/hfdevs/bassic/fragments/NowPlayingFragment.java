@@ -1,6 +1,8 @@
 package com.hfdevs.bassic.fragments;
 
 import android.animation.ValueAnimator;
+import android.graphics.Color;
+import android.net.ipsec.ike.TransportModeChildSessionParams;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,9 +11,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.transition.ArcMotion;
 
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.transition.ChangeBounds;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,10 @@ import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.google.android.material.transition.MaterialContainerTransform;
+import com.google.android.material.transition.MaterialFade;
+import com.google.android.material.transition.MaterialFadeThrough;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.adapters.ListSongsAdapter;
 import com.hfdevs.bassic.databinding.FragmentMyMusicBinding;
@@ -35,13 +43,34 @@ public class NowPlayingFragment extends Fragment {
 
     FragmentNowPlayingBinding binding;
     SongsViewModel songsViewModel;
+    //    Object transition = new MaterialFadeThrough();
+//    Object transition = new MaterialFade();
+    Object transition = new MaterialSharedAxis(MaterialSharedAxis.Y, true);
     private ValueAnimator mProgressAnimator;
     private boolean mIsTracking = false;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        setEnterTransition(transition);
+//        setReturnTransition(transition);
+//        returnTransition = MaterialFadeThrough()
+        MaterialContainerTransform object = new MaterialContainerTransform();
+
+        object.setDrawingViewId(R.id.nav_host_fragment_content_main);
+//        object.setDrawDebugEnabled(true);
+//        object.setPathMotion(new ArcMotion());
+        object.setPathMotion(new ArcMotion());
+        object.setScrimColor(Color.TRANSPARENT);
+        object.setFadeMode(MaterialContainerTransform.FADE_MODE_CROSS);
+        setSharedElementEnterTransition(object);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+//        setSharedElementEnterTransition(new ChangeBounds());
         binding = FragmentNowPlayingBinding.inflate(getLayoutInflater());
         return binding.getRoot();
     }
@@ -57,7 +86,7 @@ public class NowPlayingFragment extends Fragment {
     private void init() {
         songsViewModel = new ViewModelProvider(requireActivity()).get(SongsViewModel.class);
         MediaControllerCompat mediaControllerCompat = songsViewModel.getmMediaController();
-        Toast.makeText(requireContext(), "MediaController is null = " + (mediaControllerCompat == null), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(requireContext(), "MediaController is null = " + (mediaControllerCompat == null), Toast.LENGTH_SHORT).show();
 
 //        binding.seekBar2.setMediaController(mediaControllerCompat);
     }
@@ -81,40 +110,46 @@ public class NowPlayingFragment extends Fragment {
             );
         });
 
-        songsViewModel.getPlayingPlaybackState().observe(getViewLifecycleOwner(), state -> {
-            if (mProgressAnimator != null) {
-                mProgressAnimator.cancel();
-                mProgressAnimator = null;
-            }
-
-            final int progress = state != null
-                    ? (int) state.getPosition()
-                    : 0;
-            binding.seekBar2.setProgress(progress);
-
-            if (state != null && state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-                final int timeToEnd = (int) ((binding.seekBar2.getMax() - progress) / state.getPlaybackSpeed());
-
-                mProgressAnimator = ValueAnimator.ofInt(progress, binding.seekBar2.getMax())
-                        .setDuration(timeToEnd);
-                mProgressAnimator.setInterpolator(new LinearInterpolator());
-                mProgressAnimator.addUpdateListener(animation -> {
-//                        Log.d(Constants.TAG, "MediaSeekbar: onAnimationUpdate: ");
-                    // If the user is changing the slider, cancel the animation.
-                    if (mIsTracking) {
-                        animation.cancel();
-                        return;
-                    }
-
-                    final int animatedIntValue = (int) animation.getAnimatedValue();
-                    binding.seekBar2.setProgress(animatedIntValue);
-                });
-                mProgressAnimator.start();
-            }else{
-                Log.d(Constants.TAG, "observeChanges: Not playing state");
-            }
-
+        songsViewModel.getCurrentPlayingDuration().observe(getViewLifecycleOwner(), duration -> {
+            binding.seekBar2.setProgress(duration.intValue());
+            String timeElapsed = Utils.formatDuration(duration);
+            binding.tvTimeElapsed.setText(timeElapsed);
         });
+
+//        songsViewModel.getPlayingPlaybackState().observe(getViewLifecycleOwner(), state -> {
+//            if (mProgressAnimator != null) {
+//                mProgressAnimator.cancel();
+//                mProgressAnimator = null;
+//            }
+//
+//            final int progress = state != null
+//                    ? (int) state.getPosition()
+//                    : 0;
+//            binding.seekBar2.setProgress(progress);
+//
+//            if (state != null && state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+//                final int timeToEnd = (int) ((binding.seekBar2.getMax() - progress) / state.getPlaybackSpeed());
+//
+//                mProgressAnimator = ValueAnimator.ofInt(progress, binding.seekBar2.getMax())
+//                        .setDuration(timeToEnd);
+//                mProgressAnimator.setInterpolator(new LinearInterpolator());
+//                mProgressAnimator.addUpdateListener(animation -> {
+////                        Log.d(Constants.TAG, "MediaSeekbar: onAnimationUpdate: ");
+//                    // If the user is changing the slider, cancel the animation.
+//                    if (mIsTracking) {
+//                        animation.cancel();
+//                        return;
+//                    }
+//
+//                    final int animatedIntValue = (int) animation.getAnimatedValue();
+//                    binding.seekBar2.setProgress(animatedIntValue);
+//                });
+//                mProgressAnimator.start();
+//            }else{
+//                Log.d(Constants.TAG, "observeChanges: Not playing state");
+//            }
+//
+//        });
     }
 
     private void setListeners() {

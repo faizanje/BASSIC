@@ -33,17 +33,16 @@ import com.hfdevs.bassic.utils.NotificationUtils;
 import java.io.File;
 import java.util.List;
 
+import io.reactivex.rxjava3.core.Observer;
+
 public class SongsViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Boolean> mIsPlaying = new MutableLiveData<Boolean>(false);
+    private final MutableLiveData<Long> currentPlayingDuration = new MutableLiveData<Long>();
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
     MutableLiveData<PlaybackStateCompat> playingPlaybackState = new MutableLiveData<PlaybackStateCompat>();
-    //    MediaBrowserCompat mediaBrowserCompat;
-//    MediaBrowserCompat.ConnectionCallback connectionCallback;
-//    MediaControllerCompat mediaControllerCompat;
-//    MediaBrowserCompat.SubscriptionCallback subscriptionCallback;
     private MediaBrowserHelper mMediaBrowserHelper;
 
     public SongsViewModel(@NonNull Application application) {
@@ -52,9 +51,13 @@ public class SongsViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<PlaybackStateCompat> getPlayingPlaybackState() {
-        return playingPlaybackState;
+    public LiveData<Long> getCurrentPlayingDuration() {
+        return currentPlayingDuration;
     }
+
+//    public LiveData<PlaybackStateCompat> getPlayingPlaybackState() {
+//        return playingPlaybackState;
+//    }
 
     public MediaControllerCompat getmMediaController() {
         return mMediaBrowserHelper.getmMediaController();
@@ -69,13 +72,11 @@ public class SongsViewModel extends AndroidViewModel {
     }
 
     public void refreshSongsList() {
+
         final List<Song> songs = SongProvider.getSongs(SongProvider.makeSongCursor(
                 getApplication(), SongProvider.getSongLoaderSortOrder())
         );
-        for (Song song : songs) {
-//            Log.d(Constants.TAG, "getFiles: " + song);
-        }
-        songsMutableLiveData.setValue(songs);
+//        songsMutableLiveData.setValue(songs);
         MusicLibrary.buildMediaItems(songs);
     }
 
@@ -176,6 +177,7 @@ public class SongsViewModel extends AndroidViewModel {
             if (playbackState != null &&
                     playbackState.getState() == PlaybackStateCompat.STATE_PLAYING) {
                 mIsPlaying.setValue(true);
+                currentPlayingDuration.setValue(playbackState.getPosition());
                 Log.d(Constants.TAG, "onPlaybackStateChanged: inside songsViewModel position: " + playbackState.getPosition());
             } else {
                 mIsPlaying.setValue(false);

@@ -19,6 +19,7 @@ package com.hfdevs.bassic.services;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
@@ -36,17 +37,26 @@ import com.hfdevs.bassic.utils.Constants;
  */
 public final class MediaPlayerAdapter extends PlayerAdapter {
 
+    private static final long DURATION_DELAY = 500;
     private final Context mContext;
     private final PlaybackInfoListener mPlaybackInfoListener;
+    SimpleMusicService musicService;
+    Handler handler = new Handler();
     private MediaPlayer mMediaPlayer;
     private String mFilename;
     private MediaMetadataCompat mCurrentMedia;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
-    SimpleMusicService musicService;
     // Work-around for a MediaPlayer bug related to the behavior of MediaPlayer.seekTo()
     // while not playing.
     private int mSeekWhileNotPlaying = -1;
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            setNewState(PlaybackStateCompat.STATE_PLAYING);
+            handler.postDelayed(this, DURATION_DELAY);
+        }
+    };
 
     public MediaPlayerAdapter(SimpleMusicService musicService, PlaybackInfoListener listener) {
         super(musicService.getApplicationContext());
@@ -162,6 +172,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         if (mMediaPlayer != null && !mMediaPlayer.isPlaying()) {
             mMediaPlayer.start();
             setNewState(PlaybackStateCompat.STATE_PLAYING);
+            handler.postDelayed(runnable, DURATION_DELAY);
         }
     }
 
@@ -171,6 +182,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         if (mMediaPlayer != null && mMediaPlayer.isPlaying()) {
             mMediaPlayer.pause();
             setNewState(PlaybackStateCompat.STATE_PAUSED);
+            handler.removeCallbacks(runnable);
         }
     }
 
@@ -225,7 +237,8 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
             case PlaybackStateCompat.STATE_PLAYING:
                 actions |= PlaybackStateCompat.ACTION_STOP
                         | PlaybackStateCompat.ACTION_PAUSE
-                        | PlaybackStateCompat.ACTION_SEEK_TO;
+                        | PlaybackStateCompat.ACTION_SEEK_TO
+                        | PlaybackStateCompat.ACTION_SET_REPEAT_MODE;
                 break;
             case PlaybackStateCompat.STATE_PAUSED:
                 actions |= PlaybackStateCompat.ACTION_PLAY
