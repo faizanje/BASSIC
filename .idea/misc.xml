@@ -10,22 +10,30 @@
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/ic_baseline_pause_24.xml" value="0.1585" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/ic_baseline_play_arrow_24.xml" value="0.1585" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_play_circle_filled_blue.xml" value="0.1725" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_repeat_one.xml" value="0.1095" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_repeat_one_gray.xml" value="0.1095" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_shuffle.xml" value="0.1965" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_shuffle_gray.xml" value="0.1095" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_material_shuffle_grey.xml" value="0.177" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_metro_play.xml" value="0.1875" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/icon_open_timer.xml" value="0.177" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/pause_filled.xml" value="0.124" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/drawable/selector_icon_shuffle.xml" value="0.177" />
-        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/activity_main.xml" value="0.16" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/activity_main.xml" value="0.4" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/activity_now_playing.xml" value="0.176" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/activity_splash.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/app_bar_main.xml" value="0.2" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_gallery.xml" value="0.25416666666666665" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_my_music.xml" value="0.2" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_now_playing.xml" value="0.176" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_now_playing2.xml" value="0.25416666666666665" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_sleep_timer.xml" value="0.1" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_slideshow.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/item_music_list.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/layout_song_bottom_sheet.xml" value="0.2" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/layout_switch.xml" value="0.4" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/nav_header_main.xml" value="0.1" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/menu/activity_main_drawer.xml" value="0.25025641025641027" />
       </map>

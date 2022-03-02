@@ -78,6 +78,7 @@ public class SongsViewModel extends AndroidViewModel {
             mMediaBrowserHelper = new MediaBrowserConnection(getApplication().getApplicationContext());
             mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
             mMediaBrowserHelper.onStart();
+
         }
     }
 
@@ -151,8 +152,12 @@ public class SongsViewModel extends AndroidViewModel {
         return mIsPlaying;
     }
 
-    public void seekto(int progress) {
+    public void seekTo(int progress) {
         mMediaBrowserHelper.getTransportControls().seekTo(progress);
+    }
+
+    public void startSleepTimer() {
+
     }
 
     /**

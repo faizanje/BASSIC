@@ -16,7 +16,7 @@
         android:layout_height="match_parent" />
 
     <com.google.android.material.navigation.NavigationView
-        android:backgroundTint="@color/blue_500"
+        android:backgroundTint="?attr/colorPrimary"
         app:itemIconTint="@color/white"
         app:itemTextColor="@color/white"
         app:itemTextAppearance="@style/MyTextAppearance"

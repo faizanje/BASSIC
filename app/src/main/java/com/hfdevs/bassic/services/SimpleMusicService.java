@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaDescriptionCompat;
@@ -13,6 +14,7 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,23 +38,30 @@ import java.util.Random;
 public class SimpleMusicService extends MediaBrowserServiceCompat {
 
     public MediaSessionCallback mCallback;
-    MediaPlayer mediaPlayer;
-    Handler playerDurationHandler = new Handler();
-    Runnable playerDurationRunnable = new Runnable() {
-        @Override
-        public void run() {
-//            mSession.getController().getTransportControls().
-        }
-    };
-    //    MediaSessionCompat mediaSessionCompat;
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
     private MediaPlayerAdapter mPlayback;
     private boolean mServiceInStartedState;
-
+    CountDownTimer countDownTimer;
     @Override
     public void onCreate() {
         super.onCreate();
+
+//        countDownTimer = new CountDownTimer(6000,1000) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//                Toast.makeText(SimpleMusicService.this, "Closing service", Toast.LENGTH_SHORT).show();
+//                onDestroy();
+//            }
+//        };
+//
+//        countDownTimer.start();
+
         mSession = new MediaSessionCompat(getApplicationContext(), SimpleMusicService.class.getSimpleName());
         setSessionToken(mSession.getSessionToken());
         mSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -78,9 +87,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
     @Override
     public void onDestroy() {
         mMediaNotificationManager.onDestroy();
-        mPlayback.stop();
         mSession.release();
-        playerDurationHandler.removeCallbacksAndMessages(null);
         Log.d(Constants.TAG, "onDestroy: MediaPlayerAdapter stopped, and MediaSession released");
     }
 
@@ -220,10 +227,11 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
             onPlay();
         }
 
+
         @Override
         public void onSetRepeatMode(int repeatMode) {
-
             mSession.setRepeatMode(repeatMode);
+            mPlayback.setRepeating(repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE);
             super.onSetRepeatMode(repeatMode);
         }
 
@@ -275,7 +283,6 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
 
         @Override
         public void onPlaybackCompleted() {
-//            mSession.getController().getTransportControls().skipToNext();
         }
 
         @Override

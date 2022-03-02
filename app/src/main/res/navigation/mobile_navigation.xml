@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.hfdevs.bassic.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:name="com.hfdevs.bassic.ui.slideshow.SleepTimerFragment"
+        android:label="Sleep timer"
+        tools:layout="@layout/fragment_sleep_timer" />
     <fragment
         android:id="@+id/myMusicFragment"
         android:name="com.hfdevs.bassic.fragments.MyMusicFragment"
@@ -34,6 +34,6 @@
     <fragment
         android:id="@+id/nowPlayingFragment"
         android:name="com.hfdevs.bassic.fragments.NowPlayingFragment"
-        android:label="fragment_now_playing"
+        android:label="Now playing"
         tools:layout="@layout/fragment_now_playing" />
 </navigation>

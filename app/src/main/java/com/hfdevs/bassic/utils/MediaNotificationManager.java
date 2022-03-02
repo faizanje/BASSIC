@@ -104,6 +104,7 @@ public class MediaNotificationManager {
 
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
+
     }
 
     public NotificationManager getNotificationManager() {

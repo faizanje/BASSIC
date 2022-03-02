@@ -6,14 +6,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -22,12 +26,15 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.hfdevs.bassic.Application;
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.adapters.ListSongsAdapter;
 import com.hfdevs.bassic.databinding.ActivityMainBinding;
 import com.hfdevs.bassic.loaders.SongProvider;
 import com.hfdevs.bassic.models.Song;
 import com.hfdevs.bassic.utils.Constants;
+import com.hfdevs.bassic.utils.SharedPrefs;
 import com.hfdevs.bassic.viewmodels.SongsViewModel;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
@@ -46,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -70,13 +78,49 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+
+        MenuItem menuItemMusicDownload = navigationView.getMenu().findItem(R.id.nav_music_download);
+
+        menuItemMusicDownload.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String url = "https://320ytmp3.com/en50/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
+                return false;
+            }
+        });
+
+        MenuItem menuItem = navigationView.getMenu().findItem(R.id.nav_dark_mode);
+        SwitchMaterial drawerSwitch = menuItem.getActionView().findViewById(R.id.drawerSwitch);
+        drawerSwitch.setChecked(SharedPrefs.isNightMode());
+        drawerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                AppCompatDelegate.setDefaultNightMode(isChecked ?
+                        AppCompatDelegate.MODE_NIGHT_YES :
+                        AppCompatDelegate.MODE_NIGHT_NO);
+                SharedPrefs.saveTheme(isChecked);
+            }
+        });
+//        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch (item.getItemId()){
+//                    case R.id.
+//                }
+//                return true;
+//            }
+//        });
+
     }
 
-    public void openDrawer(){
+    public void openDrawer() {
         binding.drawerLayout.open();
     }
 
-    public void closeDrawer(){
+    public void closeDrawer() {
         binding.drawerLayout.open();
     }
 
@@ -88,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 

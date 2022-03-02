@@ -29,7 +29,7 @@
         android:layout_marginTop="60dp"
         android:gravity="center"
         android:text="We Are The Champion"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textSize="25sp"
         android:textStyle="bold"
         android:transitionName="shared_transition2"
@@ -116,7 +116,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:00"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintEnd_toEndOf="@+id/seekBar2"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
 
@@ -125,7 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:00"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         app:layout_constraintStart_toStartOf="@+id/seekBar2"
         app:layout_constraintTop_toBottomOf="@+id/seekBar2" />
 

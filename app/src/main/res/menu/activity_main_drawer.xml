@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
@@ -9,7 +10,7 @@
             android:icon="@drawable/icon_awesome_music"
             android:title="My Music" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_music_download"
             android:icon="@drawable/icon_ionic_md_download"
             android:title="Music Download" />
         <item
@@ -18,6 +19,7 @@
             android:title="Sleep Timer" />
 
         <item
+            app:actionLayout="@layout/layout_switch"
             android:id="@+id/nav_dark_mode"
             android:icon="@drawable/icon_awesome_moon"
             android:title="Dark Mode" />

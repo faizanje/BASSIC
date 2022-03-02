@@ -47,8 +47,10 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     private MediaMetadataCompat mCurrentMedia;
     private int mState;
     private boolean mCurrentMediaPlayedToCompletion;
+    private boolean isRepeating = false;
     // Work-around for a MediaPlayer bug related to the behavior of MediaPlayer.seekTo()
     // while not playing.
+
     private int mSeekWhileNotPlaying = -1;
     Runnable runnable = new Runnable() {
         @Override
@@ -80,14 +82,20 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
                 public void onCompletion(MediaPlayer mediaPlayer) {
                     mPlaybackInfoListener.onPlaybackCompleted();
 
+
                     // Set the state to "paused" because it most closely matches the state
                     // in MediaPlayer with regards to available state transitions compared
                     // to "stop".
                     // Paused allows: seekTo(), start(), pause(), stop()
                     // Stop allows: stop()
                     setNewState(PlaybackStateCompat.STATE_PAUSED);
+                    if (isRepeating) {
+                        playFromMedia(mCurrentMedia);
+                    } else {
 
-                    musicService.mCallback.onSkipToNext();
+                        musicService.mCallback.onSkipToNext();
+
+                    }
                 }
             });
         }
@@ -273,5 +281,9 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         if (mMediaPlayer != null) {
             mMediaPlayer.setVolume(volume, volume);
         }
+    }
+
+    public void setRepeating(boolean b) {
+        this.isRepeating = b;
     }
 }

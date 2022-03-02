@@ -59,15 +59,15 @@ public class MyMusicFragment extends Fragment {
     SongsViewModel songsViewModel;
     //    Object transition = new MaterialFadeThrough();
 //    Object transition = new MaterialFade();
-    Object transition = new MaterialSharedAxis(MaterialSharedAxis.Z, false);
-    Object transition2 = new MaterialSharedAxis(MaterialSharedAxis.Z, true);
+    Object transition = new MaterialSharedAxis(MaterialSharedAxis.Y, false);
+    Object transition2 = new MaterialSharedAxis(MaterialSharedAxis.Y, true);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setExitTransition(transition);
-        setReenterTransition(transition2);
+//        setExitTransition(transition);
+//        setReenterTransition(transition2);
     }
 
     @Override

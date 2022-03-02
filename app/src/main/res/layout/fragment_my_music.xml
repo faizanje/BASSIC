@@ -53,7 +53,7 @@
         android:layout_height="71dp"
         android:gravity="bottom"
         android:layout_gravity="bottom"
-        android:background="@color/blue_500"
+        android:background="?attr/colorPrimary"
         android:paddingHorizontal="11dp"
         android:paddingVertical="5dp">
 

@@ -2,39 +2,26 @@ package com.hfdevs.bassic.fragments;
 
 import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.net.ipsec.ike.TransportModeChildSessionParams;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.transition.ArcMotion;
 
 import android.support.v4.media.session.MediaControllerCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
-import android.transition.ChangeBounds;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.android.material.transition.MaterialContainerTransform;
-import com.google.android.material.transition.MaterialFade;
-import com.google.android.material.transition.MaterialFadeThrough;
 import com.google.android.material.transition.MaterialSharedAxis;
 import com.hfdevs.bassic.R;
-import com.hfdevs.bassic.adapters.ListSongsAdapter;
-import com.hfdevs.bassic.databinding.FragmentMyMusicBinding;
 import com.hfdevs.bassic.databinding.FragmentNowPlayingBinding;
-import com.hfdevs.bassic.models.Song;
-import com.hfdevs.bassic.utils.Constants;
-import com.hfdevs.bassic.utils.NavControllerUtils;
 import com.hfdevs.bassic.utils.Utils;
 import com.hfdevs.bassic.viewmodels.SongsViewModel;
 
@@ -103,6 +90,12 @@ public class NowPlayingFragment extends Fragment {
 
         songsViewModel.getShuffleMode().observe(getViewLifecycleOwner(), shuffleMode -> {
 
+            Toast.makeText(requireContext(),
+                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
+                            "Shuffle mode on" :
+                            "Shuffle mode off",
+                    Toast.LENGTH_SHORT).show();
+
             binding.btnShuffle.setImageResource(
                     shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
                             R.drawable.icon_material_shuffle :
@@ -113,6 +106,13 @@ public class NowPlayingFragment extends Fragment {
         });
 
         songsViewModel.getRepeatMode().observe(getViewLifecycleOwner(), repeatMode -> {
+
+
+            Toast.makeText(requireContext(),
+                    repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
+                            "Repeat mode on" :
+                            "Repeat mode off",
+                    Toast.LENGTH_SHORT).show();
 
             binding.btnRepeat.setImageResource(
                     repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
@@ -138,40 +138,6 @@ public class NowPlayingFragment extends Fragment {
             binding.tvTimeElapsed.setText(timeElapsed);
         });
 
-//        songsViewModel.getPlayingPlaybackState().observe(getViewLifecycleOwner(), state -> {
-//            if (mProgressAnimator != null) {
-//                mProgressAnimator.cancel();
-//                mProgressAnimator = null;
-//            }
-//
-//            final int progress = state != null
-//                    ? (int) state.getPosition()
-//                    : 0;
-//            binding.seekBar2.setProgress(progress);
-//
-//            if (state != null && state.getState() == PlaybackStateCompat.STATE_PLAYING) {
-//                final int timeToEnd = (int) ((binding.seekBar2.getMax() - progress) / state.getPlaybackSpeed());
-//
-//                mProgressAnimator = ValueAnimator.ofInt(progress, binding.seekBar2.getMax())
-//                        .setDuration(timeToEnd);
-//                mProgressAnimator.setInterpolator(new LinearInterpolator());
-//                mProgressAnimator.addUpdateListener(animation -> {
-////                        Log.d(Constants.TAG, "MediaSeekbar: onAnimationUpdate: ");
-//                    // If the user is changing the slider, cancel the animation.
-//                    if (mIsTracking) {
-//                        animation.cancel();
-//                        return;
-//                    }
-//
-//                    final int animatedIntValue = (int) animation.getAnimatedValue();
-//                    binding.seekBar2.setProgress(animatedIntValue);
-//                });
-//                mProgressAnimator.start();
-//            }else{
-//                Log.d(Constants.TAG, "observeChanges: Not playing state");
-//            }
-//
-//        });
     }
 
     private void setListeners() {
@@ -195,7 +161,7 @@ public class NowPlayingFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                songsViewModel.seekto(seekBar.getProgress());
+                songsViewModel.seekTo(seekBar.getProgress());
                 mIsTracking = false;
             }
         });
@@ -214,11 +180,11 @@ public class NowPlayingFragment extends Fragment {
         });
 
         binding.btnShuffle.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Shuffled", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), "Shuffled", Toast.LENGTH_SHORT).show();
             songsViewModel.shuffle();
         });
         binding.btnRepeat.setOnClickListener(v -> {
-            Toast.makeText(requireContext(), "Repeat mode", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(), "Repeat mode", Toast.LENGTH_SHORT).show();
             songsViewModel.toggleRepeatMode();
         });
 
