@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-public class Song {
+public class Song implements Cloneable {
 
     static final Song EMPTY_SONG = new Song("", -1, -1, -1, null, "", -1, "");
 
@@ -20,6 +20,8 @@ public class Song {
     private String mId;
 
     public Song() {
+        setmTitle("");
+        setmArtistName("");
     }
 
     public Song(String mTitle, int mDuration, String mArtistName, String mId) {
@@ -74,6 +76,34 @@ public class Song {
             formatted = trackNumber % 1000;
         }
         return formatted;
+    }
+
+    @NonNull
+    @Override
+    public Song clone() {
+        Song song = null;
+        try {
+            song = (Song) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            song = new Song();
+        }
+        song.setmTitle(this.mTitle);
+        song.setmArtistName(this.mArtistName);
+
+        return song;
+    }
+
+    public void setmTitle(String mTitle) {
+        this.mTitle = mTitle;
+    }
+
+    public void setmAlbumName(String mAlbumName) {
+        this.mAlbumName = mAlbumName;
+    }
+
+    public void setmArtistName(String mArtistName) {
+        this.mArtistName = mArtistName;
     }
 
     @NonNull

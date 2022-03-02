@@ -103,6 +103,7 @@ public class MediaNotificationManager {
     }
 
     public void onDestroy() {
+        mNotificationManager.cancelAll();
         Log.d(TAG, "onDestroy: ");
 
     }

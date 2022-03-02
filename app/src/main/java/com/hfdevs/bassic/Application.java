@@ -8,6 +8,7 @@ public class Application extends android.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
         SharedPrefs.init(this);
         AppCompatDelegate.setDefaultNightMode(SharedPrefs.isNightMode() ?
                 AppCompatDelegate.MODE_NIGHT_YES :

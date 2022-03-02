@@ -43,6 +43,7 @@ public class SongsViewModel extends AndroidViewModel {
     private final MutableLiveData<Integer> repeatMode = new MutableLiveData<Integer>();
     MutableLiveData<List<Song>> songsMutableLiveData = new MutableLiveData<>();
     MutableLiveData<List<MediaBrowserCompat.MediaItem>> mediaItemsMutableLiveData = new MutableLiveData<>();
+    MutableLiveData<List<MediaBrowserCompat.MediaItem>> searchResultsLiveData = new MutableLiveData<>();
     MutableLiveData<Song> nowPlaying = new MutableLiveData<Song>();
     MutableLiveData<PlaybackStateCompat> playingPlaybackState = new MutableLiveData<PlaybackStateCompat>();
     private MediaBrowserHelper mMediaBrowserHelper;
@@ -51,6 +52,10 @@ public class SongsViewModel extends AndroidViewModel {
         super(application);
         connectToMediaPlaybackService();
 
+    }
+
+    public MutableLiveData<List<MediaBrowserCompat.MediaItem>> getSearchResultsLiveData() {
+        return searchResultsLiveData;
     }
 
     public LiveData<Long> getCurrentPlayingDuration() {
@@ -76,19 +81,22 @@ public class SongsViewModel extends AndroidViewModel {
     private void connectToMediaPlaybackService() {
         if (mMediaBrowserHelper == null) {
             mMediaBrowserHelper = new MediaBrowserConnection(getApplication().getApplicationContext());
+
             mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
             mMediaBrowserHelper.onStart();
-
         }
     }
 
     public void refreshSongsList() {
-
         final List<Song> songs = SongProvider.getSongs(SongProvider.makeSongCursor(
                 getApplication(), SongProvider.getSongLoaderSortOrder())
         );
 //        songsMutableLiveData.setValue(songs);
         MusicLibrary.buildMediaItems(songs);
+    }
+
+    public void forceConnect() {
+        mMediaBrowserHelper.forceConnect();
     }
 
 
@@ -127,10 +135,10 @@ public class SongsViewModel extends AndroidViewModel {
     public void shuffle() {
         if (shuffleMode.getValue() != null) {
             if (shuffleMode.getValue() == PlaybackStateCompat.SHUFFLE_MODE_ALL) {
-                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.SHUFFLE_MODE_NONE);
+//                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_NONE);
                 mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_NONE);
             } else {
-                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.SHUFFLE_MODE_ALL);
+//                mMediaBrowserHelper.shuffleCallback(PlaybackStateCompat.SHUFFLE_MODE_ALL);
                 mMediaBrowserHelper.getTransportControls().setShuffleMode(PlaybackStateCompat.SHUFFLE_MODE_ALL);
             }
         }
@@ -139,10 +147,10 @@ public class SongsViewModel extends AndroidViewModel {
     public void toggleRepeatMode() {
         if (repeatMode.getValue() != null) {
             if (repeatMode.getValue() == PlaybackStateCompat.REPEAT_MODE_ONE) {
-                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_NONE);
+//                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_NONE);
                 mMediaBrowserHelper.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_NONE);
             } else {
-                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_ONE);
+//                mMediaBrowserHelper.repeatModeCallback(PlaybackStateCompat.REPEAT_MODE_ONE);
                 mMediaBrowserHelper.getTransportControls().setRepeatMode(PlaybackStateCompat.REPEAT_MODE_ONE);
             }
         }
@@ -160,6 +168,10 @@ public class SongsViewModel extends AndroidViewModel {
 
     }
 
+    public void filterData(String query) {
+
+    }
+
     /**
      * and implement our app specific desires.
      */
@@ -168,9 +180,10 @@ public class SongsViewModel extends AndroidViewModel {
             super(context, SimpleMusicService.class);
         }
 
+
         @Override
         protected void onConnected(@NonNull MediaControllerCompat mediaController) {
-//            mSeekBarAudio.setMediaController(mediaController);
+            Log.d(Constants.TAG, "onConnected: Called");
         }
 
         @Override
@@ -182,6 +195,7 @@ public class SongsViewModel extends AndroidViewModel {
 
             final MediaControllerCompat mediaController = getMediaController();
             mediaItemsMutableLiveData.setValue(children);
+            searchResultsLiveData.setValue(children);
             // Queue up all media items for this simple sample.
             for (final MediaBrowserCompat.MediaItem mediaItem : children) {
                 mediaController.addQueueItem(mediaItem.getDescription());

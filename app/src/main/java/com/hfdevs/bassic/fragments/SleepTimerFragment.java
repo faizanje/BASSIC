@@ -1,10 +1,11 @@
-package com.hfdevs.bassic.ui.slideshow;
+package com.hfdevs.bassic.fragments;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import java.util.Locale;
 public class SleepTimerFragment extends Fragment {
 
     long timeInMillis;
+    boolean isSleepTimerOn;
     SongsViewModel songsViewModel;
     private FragmentSleepTimerBinding binding;
 
@@ -33,11 +35,20 @@ public class SleepTimerFragment extends Fragment {
         binding = FragmentSleepTimerBinding.inflate(inflater, container, false);
         init();
         setListeners();
+        populateViews();
 
         return binding.getRoot();
     }
 
     private void setListeners() {
+
+        binding.switchSleepTimer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPrefs.saveSleepTimerToggle(isChecked);
+                showSleepTimerLayout(isChecked);
+            }
+        });
         binding.etSelectTime.setOnClickListener(v -> {
             // TODO Auto-generated method stub
             Calendar mcurrentTime = Calendar.getInstance();
@@ -50,7 +61,7 @@ public class SleepTimerFragment extends Fragment {
                 calendar.set(Calendar.MINUTE, selectedMinute);
                 timeInMillis = calendar.getTimeInMillis();
                 binding.etSelectTime.setText(getFormattedDateTime(timeInMillis));
-            }, hour, minute, true);//Yes 24 hour time
+            }, hour, minute, false);//Yes 24 hour time
             mTimePicker.setTitle("Select Time");
             mTimePicker.show();
         });
@@ -62,11 +73,22 @@ public class SleepTimerFragment extends Fragment {
         });
     }
 
+    private void showSleepTimerLayout(boolean show) {
+        isSleepTimerOn = show;
+        binding.layoutSleepTimer.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
     private void init() {
         songsViewModel =
                 new ViewModelProvider(requireActivity()).get(SongsViewModel.class);
+        isSleepTimerOn = SharedPrefs.isSleepTimerOn();
         timeInMillis = SharedPrefs.getSleepTime();
+    }
+
+    private void populateViews() {
+        binding.switchSleepTimer.setChecked(isSleepTimerOn);
         binding.etSelectTime.setText(getFormattedDateTime(timeInMillis));
+        showSleepTimerLayout(isSleepTimerOn);
     }
 
     @NonNull

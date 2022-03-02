@@ -7,6 +7,8 @@ import android.support.v4.media.MediaMetadataCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 
-public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyViewHolder> {
+public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyViewHolder> implements Filterable {
 
     ArrayList<MediaBrowserCompat.MediaItem> listSongsArrayList;
     Context context;
@@ -64,6 +66,41 @@ public class ListSongsAdapter extends RecyclerView.Adapter<ListSongsAdapter.MyVi
     public int getItemCount() {
         return listSongsArrayList.size();
     }
+
+//    @Override
+//    public Filter getFilter() {
+//        return new Filter() {
+//            @Override
+//            protected FilterResults performFiltering(CharSequence charSequence) {
+//                String charString = charSequence.toString();
+//                if (charString.isEmpty()) {
+//                    contactListFiltered = contactList;
+//                } else {
+//                    List<Contact> filteredList = new ArrayList<>();
+//                    for (Contact row : contactList) {
+//
+//                        // name match condition. this might differ depending on your requirement
+//                        // here we are looking for name or phone number match
+//                        if (row.getName().toLowerCase().contains(charString.toLowerCase()) || row.getPhone().contains(charSequence)) {
+//                            filteredList.add(row);
+//                        }
+//                    }
+//
+//                    contactListFiltered = filteredList;
+//                }
+//
+//                FilterResults filterResults = new FilterResults();
+//                filterResults.values = contactListFiltered;
+//                return filterResults;
+//            }
+//
+//            @Override
+//            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+//                contactListFiltered = (ArrayList<Contact>) filterResults.values;
+//                notifyDataSetChanged();
+//            }
+//        };
+//    }
 
     public interface OnListSongsClickListener {
         void onListSongsClicked(int position, MediaBrowserCompat.MediaItem song);

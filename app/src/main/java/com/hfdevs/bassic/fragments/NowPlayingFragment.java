@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.fragment.FragmentNavigator;
 import androidx.transition.ArcMotion;
 
 import android.support.v4.media.session.MediaControllerCompat;
@@ -22,6 +23,7 @@ import com.google.android.material.transition.MaterialContainerTransform;
 import com.google.android.material.transition.MaterialSharedAxis;
 import com.hfdevs.bassic.R;
 import com.hfdevs.bassic.databinding.FragmentNowPlayingBinding;
+import com.hfdevs.bassic.utils.NavControllerUtils;
 import com.hfdevs.bassic.utils.Utils;
 import com.hfdevs.bassic.viewmodels.SongsViewModel;
 
@@ -102,7 +104,6 @@ public class NowPlayingFragment extends Fragment {
                             R.drawable.icon_material_shuffle_gray
             );
 
-
         });
 
         songsViewModel.getRepeatMode().observe(getViewLifecycleOwner(), repeatMode -> {
@@ -148,6 +149,15 @@ public class NowPlayingFragment extends Fragment {
             }
         });
 
+        binding.btnLyrics.setOnClickListener(v -> {
+//            NavControllerUtils.getNavController(getActivity())
+//                    .navigate(R.id.action_nowPlayingFragment_to_lyricsFragment);
+            FragmentNavigator.Extras extras = new FragmentNavigator.Extras.Builder()
+                    .addSharedElement(binding.tvSongNameExpanded, "shared_transition2")
+                    .build();
+            NavControllerUtils.getNavController(getActivity())
+                    .navigate(R.id.action_nowPlayingFragment_to_lyricsFragment, null, null, extras);
+        });
         binding.seekBar2.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

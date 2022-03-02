@@ -17,7 +17,6 @@
 package com.hfdevs.bassic.services;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -25,10 +24,12 @@ import android.support.v4.media.MediaBrowserCompat;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.hfdevs.bassic.activities.MainActivity;
 import com.hfdevs.bassic.loaders.MusicLibrary;
 import com.hfdevs.bassic.utils.Constants;
+import com.hfdevs.bassic.utils.SharedPrefs;
 
 
 /**
@@ -42,6 +43,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
     private final PlaybackInfoListener mPlaybackInfoListener;
     SimpleMusicService musicService;
     Handler handler = new Handler();
+    Handler sleepHandler = new Handler();
     private MediaPlayer mMediaPlayer;
     private String mFilename;
     private MediaMetadataCompat mCurrentMedia;
@@ -57,6 +59,20 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         public void run() {
             setNewState(PlaybackStateCompat.STATE_PLAYING);
             handler.postDelayed(this, DURATION_DELAY);
+        }
+    };
+    Runnable sleepTimerRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (shouldRunSleepTimer()) {
+                Log.d(Constants.TAG, "run: Less than current millis");
+                sleepHandler.postDelayed(this, 1000);
+            } else {
+                Log.d(Constants.TAG, "run: Pausing/Sleeping the mediaPlayer");
+                // Sleep timer timer has passed. Pause the mediaPlayer
+                Toast.makeText(mContext, "Player slept", Toast.LENGTH_SHORT).show();
+                onPause();
+            }
         }
     };
 
@@ -133,6 +149,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
 
         mFilename = filename;
 
+
         initializeMediaPlayer();
 
         try {
@@ -154,6 +171,23 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
         }
 
         play();
+    }
+
+    private void startSleepTimer() {
+        if (SharedPrefs.isSleepTimerOn() /*&& shouldRunSleepTimer()*/) {
+            handler.post(sleepTimerRunnable);
+        } else {
+            handler.removeCallbacks(sleepTimerRunnable);
+        }
+    }
+
+    private boolean shouldRunSleepTimer() {
+        long sleepTimeInMillis = SharedPrefs.getSleepTime();
+        long currentTimeInMillis = System.currentTimeMillis();
+
+        Log.d(Constants.TAG, String.format("%s < %s", sleepTimeInMillis, currentTimeInMillis));
+        return sleepTimeInMillis > currentTimeInMillis;
+
     }
 
     @Override
@@ -182,6 +216,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
             mMediaPlayer.start();
             setNewState(PlaybackStateCompat.STATE_PLAYING);
             handler.postDelayed(runnable, DURATION_DELAY);
+            startSleepTimer();
         }
     }
 
@@ -192,6 +227,7 @@ public final class MediaPlayerAdapter extends PlayerAdapter {
             mMediaPlayer.pause();
             setNewState(PlaybackStateCompat.STATE_PAUSED);
             handler.removeCallbacks(runnable);
+            sleepHandler.removeCallbacks(sleepTimerRunnable);
         }
     }
 

@@ -29,6 +29,15 @@ public class SharedPrefs {
         return sharedPreferences.getBoolean(Constants.KEY_IS_NIGHT, false);
     }
 
+    public static void saveSleepTimerToggle(boolean isSleepTimerEnabled) {
+        sharedPreferencesEditor.putBoolean(Constants.KEY_IS_SLEEP_TIMER_ENABLED, isSleepTimerEnabled)
+                .apply();
+    }
+
+    public static boolean isSleepTimerOn() {
+        return sharedPreferences.getBoolean(Constants.KEY_IS_SLEEP_TIMER_ENABLED, false);
+    }
+
     public static void saveSleepTime(long timeInMillis) {
         sharedPreferencesEditor.putLong(Constants.KEY_SLEEP_TIME, timeInMillis)
                 .apply();
@@ -38,5 +47,6 @@ public class SharedPrefs {
         return sharedPreferences.getLong(Constants.KEY_SLEEP_TIME,
                 Calendar.getInstance().getTimeInMillis());
     }
+
 
 }

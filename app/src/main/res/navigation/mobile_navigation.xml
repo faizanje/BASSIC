@@ -12,14 +12,14 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.hfdevs.bassic.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/lyricsFragment"
+        android:name="com.hfdevs.bassic.fragments.LyricsFragment"
+        android:label="Lyrics"
+        tools:layout="@layout/fragment_lyrics" />
 
     <fragment
         android:id="@+id/nav_slideshow"
-        android:name="com.hfdevs.bassic.ui.slideshow.SleepTimerFragment"
+        android:name="com.hfdevs.bassic.fragments.SleepTimerFragment"
         android:label="Sleep timer"
         tools:layout="@layout/fragment_sleep_timer" />
     <fragment
@@ -35,5 +35,11 @@
         android:id="@+id/nowPlayingFragment"
         android:name="com.hfdevs.bassic.fragments.NowPlayingFragment"
         android:label="Now playing"
-        tools:layout="@layout/fragment_now_playing" />
+        tools:layout="@layout/fragment_now_playing" >
+        <action
+            android:id="@+id/action_nowPlayingFragment_to_lyricsFragment"
+            app:destination="@id/lyricsFragment" />
+    </fragment>
+
+
 </navigation>

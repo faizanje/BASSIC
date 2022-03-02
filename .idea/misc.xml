@@ -26,16 +26,19 @@
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/content_main.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_gallery.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_home.xml" value="0.25416666666666665" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_lyrics.xml" value="0.25416666666666665" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_lyrics_binding.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_my_music.xml" value="0.2" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_now_playing.xml" value="0.176" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_now_playing2.xml" value="0.25416666666666665" />
-        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_sleep_timer.xml" value="0.1" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_sleep_timer.xml" value="0.264" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/fragment_slideshow.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/item_music_list.xml" value="0.25416666666666665" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/layout_song_bottom_sheet.xml" value="0.2" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/layout_switch.xml" value="0.4" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/layout/nav_header_main.xml" value="0.1" />
         <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/menu/activity_main_drawer.xml" value="0.25025641025641027" />
+        <entry key="..\:/AProjects/Android Studio Projects/BASSIC/app/src/main/res/menu/main.xml" value="0.25052083333333336" />
       </map>
     </option>
   </component>

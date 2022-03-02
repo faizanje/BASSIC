@@ -87,6 +87,13 @@ public class MediaBrowserHelper {
         Log.d(TAG, "onStart: Creating MediaBrowser, and connecting");
     }
 
+    public void forceConnect() {
+        if (mMediaBrowser != null) {
+            mMediaBrowser.disconnect();
+            mMediaBrowser.connect();
+        }
+    }
+
     public void onStop() {
         if (mMediaController != null) {
             mMediaController.unregisterCallback(mMediaControllerCallback);

@@ -98,7 +98,11 @@ public class MyMusicFragment extends Fragment {
 
     private void setListeners() {
 
-        binding.swipeRefreshLayout.setOnRefreshListener(() -> songsViewModel.refreshSongsList());
+        binding.swipeRefreshLayout.setOnRefreshListener(() -> {
+            binding.swipeRefreshLayout.setRefreshing(false);
+//            songsViewModel.refreshSongsList();
+//            songsViewModel.forceConnect();
+        });
         adapter.setOnListSongsClickListener((position, song) -> songsViewModel.playFromMediaId(song.getMediaId()));
         binding.btnMusicLogo.setOnClickListener(v -> {
 

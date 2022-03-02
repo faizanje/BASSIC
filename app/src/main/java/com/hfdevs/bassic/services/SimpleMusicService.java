@@ -38,24 +38,26 @@ import java.util.Random;
 public class SimpleMusicService extends MediaBrowserServiceCompat {
 
     public MediaSessionCallback mCallback;
+    Handler sleepHandler;
     private MediaSessionCompat mSession;
     private MediaNotificationManager mMediaNotificationManager;
     private MediaPlayerAdapter mPlayback;
     private boolean mServiceInStartedState;
-    CountDownTimer countDownTimer;
+
     @Override
     public void onCreate() {
         super.onCreate();
-
+        sleepHandler = new Handler();
 //        countDownTimer = new CountDownTimer(6000,1000) {
 //            @Override
 //            public void onTick(long millisUntilFinished) {
-//
+//                Log.d(Constants.TAG, "onTick: " + millisUntilFinished);
 //            }
 //
 //            @Override
 //            public void onFinish() {
 //                Toast.makeText(SimpleMusicService.this, "Closing service", Toast.LENGTH_SHORT).show();
+//                mPlayback.onStop();
 //                onDestroy();
 //            }
 //        };
@@ -116,7 +118,7 @@ public class SimpleMusicService extends MediaBrowserServiceCompat {
         private int mQueueIndex = -1;
         private MediaMetadataCompat mPreparedMedia;
         private boolean isRandom = false;
-        private boolean isRepeatModeOn = false;
+        private final boolean isRepeatModeOn = false;
 
         @Override
         public void onAddQueueItem(MediaDescriptionCompat description) {
