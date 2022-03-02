@@ -70,7 +70,7 @@ public class MusicLibrary {
 
     public static MediaMetadataCompat getMetadata(String mediaId) {
         Song song = songs.get(mediaId);
-        Log.d(Constants.TAG, "getMetadata: song " + song);
+//        Log.d(Constants.TAG, "getMetadata: song " + song);
        MediaMetadataCompat.Builder  metaDataBuilder = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID, song.getmId())
                 .putString(MediaMetadataCompat.METADATA_KEY_ALBUM,song.getAlbumName())

@@ -117,9 +117,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
                 boolean isMusicFragment = navDestination.getId() == R.id.myMusicFragment;
-                if (searchView != null) {
-                    searchView.setVisibility(isMusicFragment ? View.VISIBLE : View.GONE);
-                }
+//                final MenuItem searchItem = menu.findItem(R.id.action_search);
+//                searchView = (SearchView) searchItem.getActionView();
+//                if (searchView != null) {
+//                    searchView.setVisibility(isMusicFragment ? View.VISIBLE : View.GONE);
+//                    searchView.setVisibility(View.GONE);
+//                }
             }
         });
 //        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -157,13 +160,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 //        return true;
 //    }
 
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        this.menu = menu;
-        final MenuItem searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
-        searchView.setOnQueryTextListener(this);
+        Log.d(Constants.TAG, "onCreateOptionsMenu: Called");
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        this.menu = menu;
+//        final MenuItem searchItem = menu.findItem(R.id.action_search);
+//        searchView = (SearchView) searchItem.getActionView();
         return true;
     }
 
@@ -176,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextSubmit(String query) {
         songsViewModel.filterData(query);
+
         return false;
     }
 
@@ -186,4 +196,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 || super.onSupportNavigateUp();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (binding.drawerLayout.isOpen()) {
+            binding.drawerLayout.close();
+            return;
+        }
+        super.onBackPressed();
+    }
 }

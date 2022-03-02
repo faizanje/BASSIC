@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -25,6 +27,9 @@ import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -57,26 +62,29 @@ public class MyMusicFragment extends Fragment {
     FragmentMyMusicBinding binding;
     ListSongsAdapter adapter;
     SongsViewModel songsViewModel;
-    //    Object transition = new MaterialFadeThrough();
-//    Object transition = new MaterialFade();
-    Object transition = new MaterialSharedAxis(MaterialSharedAxis.Y, false);
-    Object transition2 = new MaterialSharedAxis(MaterialSharedAxis.Y, true);
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-//        setExitTransition(transition);
-//        setReenterTransition(transition2);
-    }
+    SearchView searchView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMyMusicBinding.inflate(getLayoutInflater());
-        rxPermissions = new RxPermissions(this);
+        setHasOptionsMenu(true);
 
+        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (searchView != null) {
+                    if (!searchView.isIconified()) {
+                        searchView.setIconified(true);
+                        return;
+                    }
+                    getActivity().onBackPressed();
+                }
+            }
+        });
+
+        rxPermissions = new RxPermissions(this);
         return binding.getRoot();
     }
 
@@ -213,6 +221,7 @@ public class MyMusicFragment extends Fragment {
                 getReadPermission();
             });
         }
+
         materialAlertDialogBuilder.show();
     }
 
@@ -230,4 +239,49 @@ public class MyMusicFragment extends Fragment {
         super.onDestroyView();
     }
 
+    //    @Override
+//    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+//        super.onPrepareOptionsMenu(menu);
+//
+//
+//        final MenuItem searchItem = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) searchItem.getActionView();
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                adapter.getFilter().filter(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                adapter.getFilter().filter(newText);
+//                return false;
+//            }
+//        });
+//
+//    }
+//
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        Log.d(Constants.TAG, "onCreateOptionsMenu: inside fragment");
+        inflater.inflate(R.menu.main, menu);
+        final MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 }
