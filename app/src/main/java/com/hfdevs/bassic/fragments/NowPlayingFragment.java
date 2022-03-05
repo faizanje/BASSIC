@@ -92,11 +92,11 @@ public class NowPlayingFragment extends Fragment {
 
         songsViewModel.getShuffleMode().observe(getViewLifecycleOwner(), shuffleMode -> {
 
-            Toast.makeText(requireContext(),
-                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
-                            "Shuffle mode on" :
-                            "Shuffle mode off",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(),
+//                    shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
+//                            "Shuffle mode on" :
+//                            "Shuffle mode off",
+//                    Toast.LENGTH_SHORT).show();
 
             binding.btnShuffle.setImageResource(
                     shuffleMode == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
@@ -109,11 +109,11 @@ public class NowPlayingFragment extends Fragment {
         songsViewModel.getRepeatMode().observe(getViewLifecycleOwner(), repeatMode -> {
 
 
-            Toast.makeText(requireContext(),
-                    repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
-                            "Repeat mode on" :
-                            "Repeat mode off",
-                    Toast.LENGTH_SHORT).show();
+//            Toast.makeText(requireContext(),
+//                    repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
+//                            "Repeat mode on" :
+//                            "Repeat mode off",
+//                    Toast.LENGTH_SHORT).show();
 
             binding.btnRepeat.setImageResource(
                     repeatMode == PlaybackStateCompat.REPEAT_MODE_ONE ?
@@ -190,11 +190,28 @@ public class NowPlayingFragment extends Fragment {
         });
 
         binding.btnShuffle.setOnClickListener(v -> {
-//            Toast.makeText(requireContext(), "Shuffled", Toast.LENGTH_SHORT).show();
+            if (songsViewModel.getShuffleMode().getValue() != null) {
+                int value = songsViewModel.getShuffleMode().getValue();
+                String message = value == PlaybackStateCompat.SHUFFLE_MODE_ALL ?
+                        "Shuffled off" :
+                        "Shuffled on";
+
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+
+            }
+
             songsViewModel.shuffle();
         });
         binding.btnRepeat.setOnClickListener(v -> {
-//            Toast.makeText(requireContext(), "Repeat mode", Toast.LENGTH_SHORT).show();
+            if (songsViewModel.getRepeatMode().getValue() != null) {
+                int value = songsViewModel.getRepeatMode().getValue();
+                String message = value == PlaybackStateCompat.REPEAT_MODE_ONE ?
+                        "Repeat off" :
+                        "Repeat on";
+
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
+
+            }
             songsViewModel.toggleRepeatMode();
         });
 

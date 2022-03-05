@@ -65,24 +65,33 @@ public class MyMusicFragment extends Fragment {
     SearchView searchView;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getActivity().getOnBackPressedDispatcher().addCallback(
+                this,
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (searchView != null) {
+                            if (!searchView.isIconified()) {
+                                searchView.setIconified(true);
+                            }
+                            else if(isEnabled()){
+                                setEnabled(false);
+                                getActivity().onBackPressed();
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         binding = FragmentMyMusicBinding.inflate(getLayoutInflater());
         setHasOptionsMenu(true);
 
-        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (searchView != null) {
-                    if (!searchView.isIconified()) {
-                        searchView.setIconified(true);
-                        return;
-                    }
-                    getActivity().onBackPressed();
-                }
-            }
-        });
 
         rxPermissions = new RxPermissions(this);
         return binding.getRoot();
